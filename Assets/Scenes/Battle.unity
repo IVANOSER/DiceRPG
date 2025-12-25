@@ -1409,6 +1409,7 @@ GameObject:
   - component: {fileID: 975233922}
   - component: {fileID: 975233921}
   - component: {fileID: 975233920}
+  - component: {fileID: 975233923}
   m_Layer: 0
   m_Name: Battle
   m_TagString: Untagged
@@ -1504,6 +1505,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &975233923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 975233918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9a9b5005cc81154ea7753f9bb24aeb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exitPopup: {fileID: 1186760693}
+  menuSceneName: Main
 --- !u!1 &1082089236
 GameObject:
   m_ObjectHideFlags: 0
@@ -1802,7 +1817,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1186760696}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 975233923}
+        m_TargetAssemblyTypeName: ExitToMenuUI, Assembly-CSharp
+        m_MethodName: ConfirmExitToMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1186760696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2962,7 +2989,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1768181589}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1809422117}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1768181589
 MonoBehaviour:
   m_ObjectHideFlags: 0

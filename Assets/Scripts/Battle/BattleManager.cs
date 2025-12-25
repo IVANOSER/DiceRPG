@@ -31,28 +31,28 @@ public class BattleManager : MonoBehaviour
 
     public void SelectEnemy(Enemy enemy)
     {
+        if (!TurnManager.Instance.IsPlayerTurn) return;
         if (selectedEnemy == enemy) return;
 
-        // зняти підсвітку зі старого
+        // вимкнути на старому
         if (selectedEnemy != null)
         {
-            var oldHighlight = selectedEnemy.GetComponent<EnemyHighlight>();
-            if (oldHighlight != null)
-                oldHighlight.SetHighlighted(false);
+            var oldVis = selectedEnemy.GetComponentInChildren<EnemySelectionVisual>(true);
+            if (oldVis != null) oldVis.SetSelected(false);
         }
 
         selectedEnemy = enemy;
 
-        // увімкнути підсвітку
-        var newHighlight = selectedEnemy.GetComponent<EnemyHighlight>();
-        if (newHighlight != null)
-            newHighlight.SetHighlighted(true);
-
-        Debug.Log("Selected: " + enemy.name);
+        // увімкнути на новому
+        if (selectedEnemy != null)
+        {
+            var newVis = selectedEnemy.GetComponentInChildren<EnemySelectionVisual>(true);
+            if (newVis != null) newVis.SetSelected(true);
+        }
 
         BattleUI.Instance.Refresh(TurnManager.Instance.attacksLeft, TurnManager.Instance.IsPlayerTurn);
-
     }
+
 
     public void AttackSelected(int damage)
     {

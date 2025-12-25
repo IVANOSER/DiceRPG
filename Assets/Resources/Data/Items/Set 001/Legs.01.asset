@@ -10,22 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b2cba74da479412cb1cd29ce438dc0f, type: 3}
-  m_Name: good.rhd.002
+  m_Name: Legs.01
   m_EditorClassIdentifier: 
   quality: 0
-  slot: 1
-  setNumber: 2
-  id: good.rhd.002
-  displayName: good.rhd.002
-  icon: {fileID: 0}
-  modifiers: []
+  slot: 5
+  setNumber: 1
+  id: good.lg.001
+  displayName: good.hd.001
+  icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  modifiers:
+  - type: 0
+    value: 10
   meshReplaces:
-  - target: 0
-    mesh: {fileID: 4300560, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
+  - target: 9
+    mesh: {fileID: 4300790, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
     materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
-  - target: 1
-    mesh: {fileID: 4300644, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
+  - target: 10
+    mesh: {fileID: 4300848, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
     materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
-  - target: 2
-    mesh: {fileID: 4301234, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
+  - target: 11
+    mesh: {fileID: 4300888, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
     materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}

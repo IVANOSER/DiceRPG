@@ -29,6 +29,10 @@ public class EquipTabController : MonoBehaviour
     [Header("Item Picker Actions")]
     public Button btnRemove; // ✅ нова кнопка "зняти"
 
+    [Header("Auto load items (optional)")]
+    public bool autoLoadItemsFromResources = true;
+    public string itemsResourcesPath = "Data/Items";
+
     private readonly List<ItemCellView> spawnedCells = new();
     private EquipmentSlot currentSlot;
 
@@ -42,6 +46,11 @@ public class EquipTabController : MonoBehaviour
         if (btnRemove)
             btnRemove.onClick.AddListener(RemoveFromCurrentSlot);
 
+        if (autoLoadItemsFromResources && (allItems == null || allItems.Count == 0))
+            {
+            allItems = new List<EquipItemSO>(Resources.LoadAll<EquipItemSO>(itemsResourcesPath));
+            Debug.Log($"[EquipTabController] Auto-loaded {allItems.Count} items from Resources/{itemsResourcesPath}");
+            }
         RefreshAll();
         ClosePicker();
     }
@@ -106,7 +115,7 @@ public class EquipTabController : MonoBehaviour
         if (pickerPanel) pickerPanel.SetActive(false);
     }
 
-    private void RefreshAll()
+    public void RefreshAll()
     {
         if (loadout == null) return;
 
@@ -132,4 +141,42 @@ public class EquipTabController : MonoBehaviour
 
         spawnedCells.Clear();
     }
+
+    public void AddToInventory(EquipItemSO item)
+{
+    if (item == null) return;
+    if (allItems == null) allItems = new List<EquipItemSO>();
+
+    // щоб не дублювати один і той самий SO
+    if (!allItems.Contains(item))
+        allItems.Add(item);
+}
+
+public void ClearAllEquipmentAndInventory()
+{
+    if (loadout == null) return;
+
+    // зняти з усіх слотів
+    loadout.Set(EquipmentSlot.RightHand, null);
+    loadout.Set(EquipmentSlot.LeftHand,  null);
+    loadout.Set(EquipmentSlot.Helmet,    null);
+    loadout.Set(EquipmentSlot.Chest,     null);
+    loadout.Set(EquipmentSlot.Legs,      null);
+    loadout.Set(EquipmentSlot.Belt,      null);
+
+    // очистити інвентар (це і є контент ItemPicker)
+    if (allItems != null) allItems.Clear();
+
+    // закрити/почистити пікер
+    ClearGrid();
+    UpdateRemoveButtonState();
+    ClosePicker();
+
+    // оновити персонажа
+    if (meshSwapper != null)
+        meshSwapper.Apply();
+
+    RefreshAll();
+}
+
 }

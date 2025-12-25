@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b60721d7144d045e5b10c4fefca0d0fb, type: 3}
   m_Name: PlayerLoadout
   m_EditorClassIdentifier: 
-  leftHand: {fileID: 0}
-  rightHand: {fileID: 0}
+  leftHand: {fileID: 11400000, guid: 61c7c47df2d80264baa4cc1346b3e4a1, type: 2}
+  rightHand: {fileID: 11400000, guid: 0f71da26578b8ad48b1ac2bfc4902f58, type: 2}
   belt: {fileID: 0}
   helmet: {fileID: 0}
   chest: {fileID: 0}

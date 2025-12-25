@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +8,8 @@ public class EquipTabController : MonoBehaviour
     public PlayerLoadoutSO loadout;
     public List<EquipItemSO> allItems = new();
 
-    [Header("Character")]
-    public ArmsAssembler arms;
+    [Header("Character Systems")]
+    public CharacterMeshSwapper meshSwapper;
     public PlayerStats stats;
 
     [Header("UI Stats")]
@@ -27,59 +26,80 @@ public class EquipTabController : MonoBehaviour
     public Text pickerTitle;
     public Button btnClosePicker;
 
+    [Header("Item Picker Actions")]
+    public Button btnRemove; // ✅ нова кнопка "зняти"
+
     private readonly List<ItemCellView> spawnedCells = new();
-
-
     private EquipmentSlot currentSlot;
-    private readonly List<Button> spawnedButtons = new();
 
     private void Start()
     {
         foreach (var s in slotButtons)
-            s.Init(this);
+            if (s != null) s.Init(this);
 
         if (btnClosePicker) btnClosePicker.onClick.AddListener(ClosePicker);
+
+        if (btnRemove)
+            btnRemove.onClick.AddListener(RemoveFromCurrentSlot);
 
         RefreshAll();
         ClosePicker();
     }
 
     public void OpenSlot(EquipmentSlot slot)
-{
-    currentSlot = slot;
-
-    // заголовок
-    if (pickerTitle) pickerTitle.text = slot.ToString();
-
-    // очистка
-    foreach (var c in spawnedCells) if (c) Destroy(c.gameObject);
-    spawnedCells.Clear();
-
-    // фільтр по слоту
-    var candidates = allItems.FindAll(i => i != null && i.slot == slot);
-    if (candidates.Count == 0)
     {
-        Debug.LogWarning($"No items for slot: {slot}", this);
-        return;
-    }
+        currentSlot = slot;
 
-    // спавнимо плитки
-    foreach (var item in candidates)
-    {
-        var cell = Instantiate(itemCellPrefab, gridContent);
-        spawnedCells.Add(cell);
+        if (pickerTitle) pickerTitle.text = slot.ToString();
 
-        cell.Bind(item, picked =>
+        ClearGrid();
+
+        var candidates = allItems.FindAll(i => i != null && i.slot == slot);
+
+        foreach (var item in candidates)
         {
-            loadout.Set(slot, picked);
-            RefreshAll();
-            ClosePicker();
-        });
+            var cell = Instantiate(itemCellPrefab, gridContent);
+            spawnedCells.Add(cell);
+
+            cell.Bind(item, picked =>
+            {
+                loadout.Set(slot, picked);
+
+                if (meshSwapper != null)
+                    meshSwapper.Apply();
+
+                RefreshAll();
+                ClosePicker();
+            });
+        }
+
+        UpdateRemoveButtonState();
+
+        if (pickerPanel) pickerPanel.SetActive(true);
     }
 
-    pickerPanel.SetActive(true);
-}
+    private void RemoveFromCurrentSlot()
+    {
+        if (loadout == null) return;
 
+        // зняти айтем
+        loadout.Set(currentSlot, null);
+
+        if (meshSwapper != null)
+            meshSwapper.Apply();
+
+        RefreshAll();
+        UpdateRemoveButtonState();
+    }
+
+    private void UpdateRemoveButtonState()
+    {
+        if (!btnRemove || loadout == null) return;
+
+        // активна, якщо в слоті щось одягнено
+        var equipped = loadout.Get(currentSlot);
+        btnRemove.interactable = equipped != null;
+    }
 
     public void ClosePicker()
     {
@@ -88,19 +108,8 @@ public class EquipTabController : MonoBehaviour
 
     private void RefreshAll()
     {
-        // застосувати руки
-        if (arms != null)
-        {
-            var left = loadout.leftHand;
-            if (left != null && left.isArmPart)
-                arms.SetLeftArm(left.armVariantIndex);
+        if (loadout == null) return;
 
-            var right = loadout.rightHand;
-            if (right != null && right.isArmPart)
-                arms.SetRightArm(right.armVariantIndex);
-        }
-
-        // стати
         if (stats != null)
         {
             stats.Recalculate(loadout);
@@ -108,11 +117,19 @@ public class EquipTabController : MonoBehaviour
             if (dmgText) dmgText.text = stats.Damage.ToString();
         }
 
-        // іконки слотів
         foreach (var s in slotButtons)
         {
+            if (s == null) continue;
             var item = loadout.Get(s.slot);
             s.SetIcon(item != null ? item.icon : null);
         }
+    }
+
+    private void ClearGrid()
+    {
+        foreach (var c in spawnedCells)
+            if (c != null) Destroy(c.gameObject);
+
+        spawnedCells.Clear();
     }
 }

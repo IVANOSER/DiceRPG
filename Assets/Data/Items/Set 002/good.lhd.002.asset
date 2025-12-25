@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b2cba74da479412cb1cd29ce438dc0f, type: 3}
+  m_Name: good.lhd.002
+  m_EditorClassIdentifier: 
+  quality: 0
+  slot: 0
+  setNumber: 2
+  id: good.lhd.002
+  displayName: good.lhd.002
+  icon: {fileID: 0}
+  modifiers: []
+  meshReplaces:
+  - target: 3
+    mesh: {fileID: 4300602, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
+    materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
+  - target: 4
+    mesh: {fileID: 4300682, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
+    materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
+  - target: 5
+    mesh: {fileID: 4300756, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
+    materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}

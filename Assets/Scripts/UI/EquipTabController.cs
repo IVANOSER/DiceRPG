@@ -33,11 +33,17 @@ public class EquipTabController : MonoBehaviour
     public bool autoLoadItemsFromResources = true;
     public string itemsResourcesPath = "Data/Items";
 
+    [Header("Dice Preview (Lobby)")]
+    public DicePreviewBinder dicePreviewBinder; // перетягнеш в інспекторі (з лоббі сцени)
+
+
     private readonly List<ItemCellView> spawnedCells = new();
     private EquipmentSlot currentSlot;
 
     private void Start()
     {
+        Debug.Log("[EquipTabController] START OK");
+        
         foreach (var s in slotButtons)
             if (s != null) s.Init(this);
 
@@ -73,6 +79,7 @@ public class EquipTabController : MonoBehaviour
             cell.Bind(item, picked =>
             {
                 loadout.Set(slot, picked);
+                RefreshDiceFromLoadout();
 
                 if (meshSwapper != null)
                     meshSwapper.Apply();
@@ -85,6 +92,7 @@ public class EquipTabController : MonoBehaviour
         UpdateRemoveButtonState();
 
         if (pickerPanel) pickerPanel.SetActive(true);
+        
     }
 
     private void RemoveFromCurrentSlot()
@@ -93,6 +101,7 @@ public class EquipTabController : MonoBehaviour
 
         // зняти айтем
         loadout.Set(currentSlot, null);
+        RefreshDiceFromLoadout();
 
         if (meshSwapper != null)
             meshSwapper.Apply();
@@ -177,6 +186,32 @@ public void ClearAllEquipmentAndInventory()
         meshSwapper.Apply();
 
     RefreshAll();
+    RefreshDiceFromLoadout();
+
 }
+
+private void RefreshDiceFromLoadout()
+{
+    Debug.Log("[Dice] RefreshDiceFromLoadout()");
+
+
+    if (DiceLoadoutRuntime.Instance == null || loadout == null) return;
+
+    SkillSO[] skills6 = new SkillSO[]
+    {
+        loadout.Get(EquipmentSlot.RightHand)?.skill,
+        loadout.Get(EquipmentSlot.LeftHand)?.skill,
+        loadout.Get(EquipmentSlot.Belt)?.skill,
+        loadout.Get(EquipmentSlot.Helmet)?.skill,
+        loadout.Get(EquipmentSlot.Chest)?.skill,
+        loadout.Get(EquipmentSlot.Legs)?.skill,
+    };
+
+    DiceLoadoutRuntime.Instance.RebuildSkillFacesFromEquipped(skills6);
+
+    if (dicePreviewBinder != null)
+        dicePreviewBinder.ApplyFromRuntime();
+}
+
 
 }

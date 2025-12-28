@@ -28,4 +28,12 @@ public class PlayerHealth : MonoBehaviour
         if (CurrentHp <= 0)
             OnDied?.Invoke();
     }
+
+    public void Heal(int amount)
+{
+    if (amount <= 0) return;
+    CurrentHp = Mathf.Min(CurrentHp + amount, MaxHp);
+    // онови UI hp якщо треба
+}
+
 }

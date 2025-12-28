@@ -19,6 +19,7 @@ MonoBehaviour:
   displayName: good.rhd.002
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   modifiers: []
+  skill: {fileID: 11400000, guid: f6ed9e5fc92d9438081a30bd71e1eb4f, type: 2}
   meshReplaces:
   - target: 0
     mesh: {fileID: 4300560, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}

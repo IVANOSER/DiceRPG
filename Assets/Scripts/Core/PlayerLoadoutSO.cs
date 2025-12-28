@@ -28,4 +28,6 @@ public class PlayerLoadoutSO : ScriptableObject
             case EquipmentSlot.Legs: legs = item; break;
         }
     }
+
+    
 }

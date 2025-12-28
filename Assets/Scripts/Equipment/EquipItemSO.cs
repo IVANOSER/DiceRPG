@@ -25,6 +25,9 @@ public class EquipItemSO : ScriptableObject
     [Header("Stats")]
     public StatModifier[] modifiers;
 
+    [Header("Dice Skill")]
+    public SkillSO skill;
+
     [Header("Synty Mesh Swap (body parts)")]
     public List<MeshReplace> meshReplaces = new();
 

@@ -21,6 +21,7 @@ MonoBehaviour:
   modifiers:
   - type: 0
     value: 30
+  skill: {fileID: 11400000, guid: 0a4e5139140354f12b9ac2f31f204f52, type: 2}
   meshReplaces:
   - target: 8
     mesh: {fileID: 4300500, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}

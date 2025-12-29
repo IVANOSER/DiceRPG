@@ -41,25 +41,39 @@ public class EquipTabController : MonoBehaviour
     private EquipmentSlot currentSlot;
 
     private void Start()
+{
+    Debug.Log("[EquipTabController] START OK");
+
+    if (dicePreviewBinder == null)
+        dicePreviewBinder = FindObjectOfType<DicePreviewBinder>(true);
+
+    foreach (var s in slotButtons)
+        if (s != null) s.Init(this);
+
+    if (btnClosePicker) btnClosePicker.onClick.AddListener(ClosePicker);
+
+    if (btnRemove)
+        btnRemove.onClick.AddListener(RemoveFromCurrentSlot);
+
+    if (autoLoadItemsFromResources && (allItems == null || allItems.Count == 0))
     {
-        Debug.Log("[EquipTabController] START OK");
-        
-        foreach (var s in slotButtons)
-            if (s != null) s.Init(this);
-
-        if (btnClosePicker) btnClosePicker.onClick.AddListener(ClosePicker);
-
-        if (btnRemove)
-            btnRemove.onClick.AddListener(RemoveFromCurrentSlot);
-
-        if (autoLoadItemsFromResources && (allItems == null || allItems.Count == 0))
-            {
-            allItems = new List<EquipItemSO>(Resources.LoadAll<EquipItemSO>(itemsResourcesPath));
-            Debug.Log($"[EquipTabController] Auto-loaded {allItems.Count} items from Resources/{itemsResourcesPath}");
-            }
-        RefreshAll();
-        ClosePicker();
+        allItems = new List<EquipItemSO>(Resources.LoadAll<EquipItemSO>(itemsResourcesPath));
+        Debug.Log($"[EquipTabController] Auto-loaded {allItems.Count} items from Resources/{itemsResourcesPath}");
     }
+
+    RefreshAll();
+    ClosePicker();
+
+    // важливо: на наступний кадр
+    Invoke(nameof(RefreshDiceFromEquipped), 0f);
+}
+
+    private void OnEnable()
+    {
+    // коли повернувся в Equip таб
+    Invoke(nameof(RefreshDiceFromEquipped), 0f);
+    }
+
 
     public void OpenSlot(EquipmentSlot slot)
     {
@@ -79,7 +93,8 @@ public class EquipTabController : MonoBehaviour
             cell.Bind(item, picked =>
             {
                 loadout.Set(slot, picked);
-                RefreshDiceFromLoadout();
+                RefreshDiceFromEquipped();
+
 
                 if (meshSwapper != null)
                     meshSwapper.Apply();
@@ -101,13 +116,14 @@ public class EquipTabController : MonoBehaviour
 
         // зняти айтем
         loadout.Set(currentSlot, null);
-        RefreshDiceFromLoadout();
+        
 
         if (meshSwapper != null)
             meshSwapper.Apply();
 
         RefreshAll();
         UpdateRemoveButtonState();
+        RefreshDiceFromEquipped();
     }
 
     private void UpdateRemoveButtonState()
@@ -186,32 +202,30 @@ public void ClearAllEquipmentAndInventory()
         meshSwapper.Apply();
 
     RefreshAll();
-    RefreshDiceFromLoadout();
 
 }
 
-private void RefreshDiceFromLoadout()
+private void RefreshDiceFromEquipped()
 {
-    Debug.Log("[Dice] RefreshDiceFromLoadout()");
+    var rt = DiceLoadoutRuntime.Instance;
+    if (rt == null) return;
 
-
-    if (DiceLoadoutRuntime.Instance == null || loadout == null) return;
-
-    SkillSO[] skills6 = new SkillSO[]
+    SkillSO[] skills6 = new SkillSO[6]
     {
         loadout.Get(EquipmentSlot.RightHand)?.skill,
         loadout.Get(EquipmentSlot.LeftHand)?.skill,
         loadout.Get(EquipmentSlot.Belt)?.skill,
         loadout.Get(EquipmentSlot.Helmet)?.skill,
         loadout.Get(EquipmentSlot.Chest)?.skill,
-        loadout.Get(EquipmentSlot.Legs)?.skill,
+        loadout.Get(EquipmentSlot.Legs)?.skill
     };
 
-    DiceLoadoutRuntime.Instance.RebuildSkillFacesFromEquipped(skills6);
+    rt.RebuildSkillFacesFromEquipped(skills6);
 
-    if (dicePreviewBinder != null)
-        dicePreviewBinder.ApplyFromRuntime();
+    // 🔥 ОДИН ЄДИНИЙ ВИКЛИК
+    dicePreviewBinder?.ApplyFromRuntime();
 }
+
 
 
 }

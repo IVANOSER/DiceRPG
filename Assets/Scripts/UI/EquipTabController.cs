@@ -45,9 +45,9 @@ public class EquipTabController : MonoBehaviour
     Debug.Log("[EquipTabController] START OK");
 
     if (dicePreviewBinder == null)
-        dicePreviewBinder = FindObjectOfType<DicePreviewBinder>(true);
+            dicePreviewBinder = FindFirstObjectByType<DicePreviewBinder>(FindObjectsInactive.Include);
 
-    foreach (var s in slotButtons)
+        foreach (var s in slotButtons)
         if (s != null) s.Init(this);
 
     if (btnClosePicker) btnClosePicker.onClick.AddListener(ClosePicker);

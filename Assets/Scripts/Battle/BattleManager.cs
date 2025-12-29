@@ -50,7 +50,9 @@ public class BattleManager : MonoBehaviour
             if (newVis != null) newVis.SetSelected(true);
         }
 
-        BattleUI.Instance.Refresh(TurnManager.Instance.attacksLeft, TurnManager.Instance.IsPlayerTurn);
+
+        TurnManager.Instance.RefreshActionState();
+
     }
 
 
@@ -71,7 +73,7 @@ public class BattleManager : MonoBehaviour
             StartCoroutine(WorldSphere.Instance.Rotate360AndSpawnNextWave());
         }
 
-        BattleUI.Instance.Refresh(TurnManager.Instance.attacksLeft, TurnManager.Instance.IsPlayerTurn);
+        
 
     }
 }

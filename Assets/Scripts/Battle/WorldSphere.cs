@@ -129,7 +129,7 @@ public class WorldSphere : MonoBehaviour
 
         playerStats.Recalculate(loadout);
         playerHealth.ApplyMaxHpFromStats(playerStats.HP, healToFull: false); // true якщо хочеш фулл хіл між хвилями
-        TurnManager.Instance.ResetAttacksForNewWave();
-        TurnManager.Instance.ResetAttacksForNewWave();
+        TurnManager.Instance.BeginPlayerTurn();
+        TurnManager.Instance.BeginPlayerTurn();
     }
 }

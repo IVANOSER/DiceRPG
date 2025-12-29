@@ -6,38 +6,27 @@ public class BattleUI : MonoBehaviour
 {
     public static BattleUI Instance;
 
-    [Header("Buttons")]
-    [SerializeField] private Button attackButton;
-    [SerializeField] private Button endTurnButton;
-
-    [Header("Labels")]
-    [SerializeField] private TMP_Text attacksLeftText;
-    [SerializeField] private TMP_Text turnText;
-
     [Header("Popups")]
     [SerializeField] private GameObject exitPopup;
     [SerializeField] private GameObject victoryPopup;
+
+    [SerializeField] private Button actionButton;
+    [SerializeField] private TMP_Text actionText;
+
+    [SerializeField] private Button rollButton;
+
+    [SerializeField] private Button rerollButton;
+    [SerializeField] private TMP_Text rerollCountText;
 
     private void Awake()
     {
         Instance = this;
 
-        attackButton.onClick.AddListener(() => TurnManager.Instance.PlayerAttack());
-        endTurnButton.onClick.AddListener(() => TurnManager.Instance.EndPlayerTurn());
     }
 
     public void Refresh(int attacksLeft, bool isPlayerTurn)
     {
-        if (attacksLeftText != null) attacksLeftText.text = $"Attacks: {attacksLeft}";
-        if (turnText != null) turnText.text = isPlayerTurn ? "Your turn" : "Enemies turn";
-
-        bool hasTarget = BattleManager.Instance != null && BattleManager.Instance.selectedEnemy != null;
-
-        if (attackButton != null)
-            attackButton.interactable = isPlayerTurn && attacksLeft > 0 && hasTarget;
-
-        if (endTurnButton != null)
-            endTurnButton.interactable = isPlayerTurn;
+        
     }
 
     public void ShowExitPopup(bool show) => exitPopup.SetActive(show);
@@ -46,4 +35,36 @@ public class BattleUI : MonoBehaviour
     {
         victoryPopup.SetActive(true);
     }
+
+    public void SetActionInteractable(bool interactable, SkillSO pendingSkill)
+    {
+        if (actionButton) actionButton.interactable = interactable;
+
+        if (actionText)
+        {
+            if (pendingSkill == null) actionText.text = "Action";
+            else actionText.text = pendingSkill.type == SkillType.Attack ? "Attack" : "Heal";
+        }
+    }
+    public void SetRollInteractable(bool interactable)
+    {
+        if (rollButton != null)
+            rollButton.interactable = interactable;
+    }
+
+    public void SetRerollVisible(bool visible)
+    {
+        if (rerollButton != null)
+            rerollButton.gameObject.SetActive(visible);
+    }
+
+    public void SetRerollInteractable(bool interactable, int rerollsLeft)
+    {
+        if (rerollButton != null)
+            rerollButton.interactable = interactable;
+
+        if (rerollCountText != null) // якщо є текст
+            rerollCountText.text = rerollsLeft.ToString();
+    }
+
 }

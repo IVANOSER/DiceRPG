@@ -1071,11 +1071,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3474476670820981619}
-  - component: {fileID: 634124909976827759}
   - component: {fileID: 8992742970487327231}
   - component: {fileID: 2626357964687180263}
-  - component: {fileID: 1317127710382749844}
-  - component: {fileID: 2628280415411111885}
   - component: {fileID: 8001800630746761219}
   m_Layer: 0
   m_Name: D12New
@@ -1112,33 +1109,6 @@ Transform:
   - {fileID: 6221245779343308841}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &634124909976827759
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7865744300738623728}
-  serializedVersion: 5
-  m_Mass: 2
-  m_LinearDamping: 0.1
-  m_AngularDamping: 0.1
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!64 &8992742970487327231
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1175,48 +1145,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kind: 0
   diceTurn: {fileID: 0}
---- !u!114 &1317127710382749844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7865744300738623728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1972921c74e674074b18f48c2f907b82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  faces:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
---- !u!114 &2628280415411111885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7865744300738623728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56afedca19cc04de598c4c2d3937c659, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  upwardForce: 4
-  randomForce: 2
-  torque: 8
-  settleTime: 1
-  faceUpRotations: []
 --- !u!114 &8001800630746761219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1405,6 +1333,7 @@ GameObject:
   - component: {fileID: 1513086826587816730}
   - component: {fileID: 3514874000340696281}
   - component: {fileID: 3748212256325667193}
+  - component: {fileID: 3022395483584214289}
   m_Layer: 0
   m_Name: Quad
   m_TagString: Untagged
@@ -1480,6 +1409,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3022395483584214289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8750096469484979904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 718bd8c80fc16554098cf59f8a223fc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetRenderer: {fileID: 3748212256325667193}
+  textureProps:
+  - _BaseMap
+  - _MainTex
+  stProps:
+  - _BaseMap_ST
+  - _MainTex_ST
+  emptySprite: {fileID: 0}
+  hideRendererWhenNull: 1
 --- !u!1 &8890380493855471376
 GameObject:
   m_ObjectHideFlags: 0

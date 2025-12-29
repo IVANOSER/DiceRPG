@@ -9,10 +9,6 @@ public class DiceTurnController : MonoBehaviour
         ModD6
     }
 
-    [Header("3D Dice")]
-    [SerializeField] private SkillDie3D skillDie3D;
-    [SerializeField] private ModDie3D modDie3D;
-
     [Header("Player refs")]
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private PlayerStats playerStats;
@@ -57,9 +53,6 @@ public class DiceTurnController : MonoBehaviour
         RerollUsed = false;
         HasRolledThisAction = true;
 
-        RolledSkill = (skillDie3D != null) ? skillDie3D.ThrowRandom() : null;
-        RolledMod = (modDie3D != null) ? modDie3D.ThrowRandom() : null;
-
         // default selection after roll (nice UX)
         if (selectedDie == SelectedDie.None)
         {
@@ -76,18 +69,7 @@ public class DiceTurnController : MonoBehaviour
         if (RerollUsed) return;
 
         switch (selectedDie)
-        {
-            case SelectedDie.SkillD12:
-                if (skillDie3D == null) return;
-                RolledSkill = skillDie3D.ThrowRandom();
-                RerollUsed = true;
-                break;
-
-            case SelectedDie.ModD6:
-                if (modDie3D == null) return;
-                RolledMod = modDie3D.ThrowRandom();
-                RerollUsed = true;
-                break;
+        {           
 
             case SelectedDie.None:
             default:
@@ -134,15 +116,6 @@ public class DiceTurnController : MonoBehaviour
             playerHealth.Heal(totalHeal);
         }
 
-        // consume "one action/attack" (you have attacksPerTurn = 2)
-        if (TurnManager.Instance != null)
-        {
-            TurnManager.Instance.attacksLeft--;
-
-            // refresh UI same as your TurnManager does
-            if (BattleUI.Instance != null)
-                BattleUI.Instance.Refresh(TurnManager.Instance.attacksLeft, TurnManager.Instance.IsPlayerTurn);
-        }
 
         // reset state for next action in this turn (if attacksLeft > 0)
         HasRolledThisAction = false;
@@ -158,8 +131,7 @@ public class DiceTurnController : MonoBehaviour
     private bool CanRollOrAct()
     {
         if (TurnManager.Instance == null) return false;
-        if (!TurnManager.Instance.IsPlayerTurn) return false;
-        if (TurnManager.Instance.attacksLeft <= 0) return false;
+        if (!TurnManager.Instance.IsPlayerTurn) return false;       
 
         return true;
     }

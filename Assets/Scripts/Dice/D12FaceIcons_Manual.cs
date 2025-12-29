@@ -45,7 +45,7 @@ public class D12FaceIcons_Manual : MonoBehaviour
             // унікальний material instance на грань
             mats[i] = iconMaterialTemplate != null
                 ? new Material(iconMaterialTemplate)
-                : new Material(Shader.Find("Unlit/Texture"));
+                : new Material(Shader.Find("TextMeshPro/Sprite"));
 
             r.material = mats[i];
         }

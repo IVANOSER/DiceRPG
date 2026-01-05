@@ -16,8 +16,9 @@ MonoBehaviour:
   slot: 3
   setNumber: 3
   id: good.hd.003
-  displayName: Halmet03
+  displayName: Guard
   icon: {fileID: 21300000, guid: 3f45609815f16c672a33bf956a5821e8, type: 3}
+  autoFillDisplayNameIfEmpty: 0
   modifiers:
   - type: 0
     value: 10

@@ -16,8 +16,9 @@ MonoBehaviour:
   slot: 0
   setNumber: 1
   id: good.lhd.001
-  displayName: good.lhd.001
+  displayName: Doctor
   icon: {fileID: 21300000, guid: 0f139f628fe7ce529a7aa6083122414d, type: 3}
+  autoFillDisplayNameIfEmpty: 0
   modifiers:
   - type: 1
     value: 2

@@ -16,8 +16,9 @@ MonoBehaviour:
   slot: 1
   setNumber: 2
   id: good.rhd.002
-  displayName: good.rhd.002
+  displayName: Knight
   icon: {fileID: 21300000, guid: 0dffd8b37ed50dd7b98e058a8f3412dd, type: 3}
+  autoFillDisplayNameIfEmpty: 0
   modifiers: []
   skill: {fileID: 11400000, guid: f6ed9e5fc92d9438081a30bd71e1eb4f, type: 2}
   extraSkills: []

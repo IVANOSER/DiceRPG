@@ -16,8 +16,9 @@ MonoBehaviour:
   slot: 0
   setNumber: 3
   id: good.lhd.003
-  displayName: good.lhd.002
+  displayName: Guard
   icon: {fileID: 21300000, guid: 3f45609815f16c672a33bf956a5821e8, type: 3}
+  autoFillDisplayNameIfEmpty: 0
   modifiers:
   - type: 1
     value: 2

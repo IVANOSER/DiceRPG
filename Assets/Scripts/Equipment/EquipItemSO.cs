@@ -14,15 +14,21 @@ public class EquipItemSO : ScriptableObject
     public int setNumber = 1;
 
     [Header("Auto-generated ID")]
-    [SerializeField]
+    [SerializeField, Tooltip("Auto: quality.type.set (e.g. bttr.bl.001)")]
     private string id;
     public string Id => id;
 
     [Header("UI")]
+    [Tooltip("Name shown in UI. Set manually. Will NOT be overwritten by id.")]
     public string displayName;
+
     public Sprite icon;
 
-    [Header("Stats (SOURCE OF TRUTH)")]
+    // ✅ ДОДАВ (опційно): якщо хочеш, щоб ТІЛЬКИ один раз підхопило id, а далі не чіпало
+    [Tooltip("If enabled, displayName will be filled from id ONLY when displayName is empty.")]
+    public bool autoFillDisplayNameIfEmpty = true;
+
+    [Header("Stats (source of truth)")]
     public StatModifier[] modifiers;
 
     [Header("Dice Skill")]
@@ -31,7 +37,7 @@ public class EquipItemSO : ScriptableObject
     [Header("Extra Skills (shown on card)")]
     public List<SkillSO> extraSkills = new();
 
-    [Header("Synty Mesh Swap")]
+    [Header("Synty Mesh Swap (body parts)")]
     public List<MeshReplace> meshReplaces = new();
 
     [Serializable]
@@ -46,31 +52,25 @@ public class EquipItemSO : ScriptableObject
     // Item Card helpers
     // =========================
 
-    /// <summary>
-    /// Text for Item Card stats block (e.g. "+30 HP\n+10 DMG")
-    /// </summary>
     public string GetStatsTextForCard()
     {
         if (modifiers == null || modifiers.Length == 0)
             return "No stat bonuses";
 
-        List<string> lines = new();
+        List<string> lines = new(modifiers.Length);
 
         foreach (var m in modifiers)
         {
+            // StatModifier: type + value (як у твоєму файлі)
             string statName = FormatStatName(m.type);
-            int value = m.value;
-
-            string sign = value >= 0 ? "+" : "";
-            lines.Add($"{sign}{value} {statName}");
+            int v = m.value;
+            string sign = v >= 0 ? "+" : "";
+            lines.Add($"{sign}{v} {statName}");
         }
 
         return string.Join("\n", lines);
     }
 
-    /// <summary>
-    /// Text for Item Card skills block
-    /// </summary>
     public string GetSkillsTextForCard()
     {
         List<string> lines = new();
@@ -78,24 +78,22 @@ public class EquipItemSO : ScriptableObject
         if (skill != null)
             lines.Add("• " + skill.name);
 
-        foreach (var s in extraSkills)
+        if (extraSkills != null)
         {
-            if (s != null)
-                lines.Add("• " + s.name);
+            foreach (var s in extraSkills)
+                if (s != null) lines.Add("• " + s.name);
         }
 
-        return lines.Count == 0
-            ? "No extra skills"
-            : string.Join("\n", lines);
+        return lines.Count == 0 ? "No extra skills" : string.Join("\n", lines);
     }
 
-    private string FormatStatName(StatType type)
+    private static string FormatStatName(StatType type)
     {
-        // Косметика для UI
+        // косметика під твій стиль: Damage -> DMG
         return type switch
         {
-            StatType.HP => "HP",
             StatType.Damage => "DMG",
+            StatType.HP => "HP",
             _ => type.ToString()
         };
     }
@@ -103,22 +101,23 @@ public class EquipItemSO : ScriptableObject
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (setNumber < 1)
-            setNumber = 1;
+        if (setNumber < 1) setNumber = 1;
 
         id = BuildId(quality, slot, setNumber);
 
-        if (string.IsNullOrWhiteSpace(displayName))
+        // ✅ ФІКС: displayName більше НЕ перезаписується примусово.
+        // Тільки якщо autoFill... увімкнений і поле реально пусте.
+        if (autoFillDisplayNameIfEmpty && string.IsNullOrWhiteSpace(displayName))
             displayName = id;
     }
 #endif
 
     public static string BuildId(ItemQuality q, EquipmentSlot s, int setNum)
     {
-        return $"{q}.{SlotToCode(s)}.{setNum:000}";
+        return $"{q}.{SlotToTypeCode(s)}.{setNum:000}";
     }
 
-    private static string SlotToCode(EquipmentSlot s)
+    private static string SlotToTypeCode(EquipmentSlot s)
     {
         return s switch
         {

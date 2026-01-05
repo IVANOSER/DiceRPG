@@ -6,7 +6,7 @@ public class CharacterMeshSwapper : MonoBehaviour
     public PlayerLoadoutSO loadout;
     public CharacterMeshSlots meshSlots;
 
-    // дефолт для кожного BodyPartSlot
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ BodyPartSlot
     private readonly Dictionary<BodyPartSlot, Mesh> defaultMeshes = new();
     private readonly Dictionary<BodyPartSlot, Material> defaultMaterials = new();
 
@@ -18,7 +18,7 @@ public class CharacterMeshSwapper : MonoBehaviour
 
     private void Start()
     {
-        Apply(); // щоб на старті було правильно
+        Apply(); // пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     }
 
     private void CacheDefaults()
@@ -39,16 +39,17 @@ public class CharacterMeshSwapper : MonoBehaviour
     {
         if (meshSlots == null) return;
 
-        // 1) Скидаємо все в дефолт
+        // 1) пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         ResetAllToDefault();
 
-        // 2) Накладаємо екіп
+        // 2) пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
         if (loadout == null) return;
 
         ApplyItem(loadout.leftHand);
         ApplyItem(loadout.rightHand);
         ApplyItem(loadout.helmet);
         ApplyItem(loadout.chest);
+        ApplyItem(loadout.belt);
         ApplyItem(loadout.legs);
     }
 

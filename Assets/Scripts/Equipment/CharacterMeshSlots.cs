@@ -13,12 +13,14 @@ public class CharacterMeshSlots : MonoBehaviour
     public SkinnedMeshRenderer handLeft;
 
     [Header("Body")]
-    public SkinnedMeshRenderer head;     // базова голова
+    public SkinnedMeshRenderer head;     // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public SkinnedMeshRenderer helmet;   // helmet mesh
     public SkinnedMeshRenderer chest;
 
-    [Header("Legs")]
+    [Header("Belt")]
     public SkinnedMeshRenderer hips;
+
+    [Header("Legs")]
     public SkinnedMeshRenderer legLeft;
     public SkinnedMeshRenderer legRight;
 

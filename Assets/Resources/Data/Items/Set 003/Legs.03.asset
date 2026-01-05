@@ -16,17 +16,15 @@ MonoBehaviour:
   slot: 5
   setNumber: 3
   id: good.lg.003
-  displayName: good.hd.001
+  displayName: Guard
   icon: {fileID: 21300000, guid: 3f45609815f16c672a33bf956a5821e8, type: 3}
+  autoFillDisplayNameIfEmpty: 0
   modifiers:
   - type: 1
     value: 2
   skill: {fileID: 11400000, guid: f6ed9e5fc92d9438081a30bd71e1eb4f, type: 2}
   extraSkills: []
   meshReplaces:
-  - target: 9
-    mesh: {fileID: 4300794, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
-    materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
   - target: 10
     mesh: {fileID: 4300852, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
     materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}

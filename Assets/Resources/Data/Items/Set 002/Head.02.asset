@@ -16,8 +16,9 @@ MonoBehaviour:
   slot: 3
   setNumber: 2
   id: good.hd.002
-  displayName: good.hd.002
+  displayName: Knight
   icon: {fileID: 21300000, guid: 0dffd8b37ed50dd7b98e058a8f3412dd, type: 3}
+  autoFillDisplayNameIfEmpty: 0
   modifiers:
   - type: 0
     value: 20

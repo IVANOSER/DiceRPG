@@ -30,14 +30,17 @@ public class EquipTabController : MonoBehaviour
     public Button btnRemove;
 
     [Header("Item Card (Popup)")]
-    public ItemCardPanelUI itemCardPanel; 
+    public ItemCardPanelUI itemCardPanel;
 
     [Header("Auto load items (optional)")]
     public bool autoLoadItemsFromResources = true;
     public string itemsResourcesPath = "Data/Items";
 
     [Header("Dice Preview (Lobby)")]
-    public DicePreviewBinder dicePreviewBinder; 
+    public DicePreviewBinder dicePreviewBinder;
+
+    [Header("Upgrade")]
+    public ItemUpgradeManager upgradeManager; // якщо не заданий — візьме Instance
 
     private readonly List<ItemCellView> spawnedCells = new();
     private EquipmentSlot currentSlot;
@@ -48,6 +51,13 @@ public class EquipTabController : MonoBehaviour
 
         if (dicePreviewBinder == null)
             dicePreviewBinder = FindFirstObjectByType<DicePreviewBinder>(FindObjectsInactive.Include);
+
+        if (upgradeManager == null)
+            upgradeManager = ItemUpgradeManager.Instance;
+
+        // ✅ автоматичний рефреш, коли додаються копії/голд/апгрейд
+        if (upgradeManager != null)
+            upgradeManager.OnChanged += RefreshAll;
 
         foreach (var s in slotButtons)
             if (s != null) s.Init(this);
@@ -66,13 +76,17 @@ public class EquipTabController : MonoBehaviour
         RefreshAll();
         ClosePicker();
 
-        // важливо: на наступний кадр
         Invoke(nameof(RefreshDiceFromEquipped), 0f);
+    }
+
+    private void OnDestroy()
+    {
+        if (upgradeManager != null)
+            upgradeManager.OnChanged -= RefreshAll;
     }
 
     private void OnEnable()
     {
-        // коли повернувся в Equip таб
         Invoke(nameof(RefreshDiceFromEquipped), 0f);
     }
 
@@ -91,12 +105,10 @@ public class EquipTabController : MonoBehaviour
             var cell = Instantiate(itemCellPrefab, gridContent);
             spawnedCells.Add(cell);
 
-           
             cell.Bind(item, picked =>
             {
                 if (itemCardPanel == null)
                 {
-                    
                     EquipPickedToCurrentSlot(picked);
                     return;
                 }
@@ -114,7 +126,6 @@ public class EquipTabController : MonoBehaviour
         if (pickerPanel) pickerPanel.SetActive(true);
     }
 
-    
     private void EquipPickedToCurrentSlot(EquipItemSO picked)
     {
         if (loadout == null || picked == null) return;
@@ -129,21 +140,23 @@ public class EquipTabController : MonoBehaviour
         ClosePicker();
     }
 
-    
     private void UpgradePickedItem(EquipItemSO picked)
     {
         if (picked == null) return;
 
-        Debug.Log($"[EquipTabController] Upgrade pressed for: {picked.name} ({picked.displayName})");
+        if (upgradeManager == null)
+            upgradeManager = ItemUpgradeManager.Instance;
 
-        
+        if (upgradeManager == null) return;
+
+        // ✅ Реальний апгрейд (спише копії/голд, підніме lvl, OnChanged сам зробить RefreshAll)
+        upgradeManager.TryUpgrade(picked);
     }
 
     private void RemoveFromCurrentSlot()
     {
         if (loadout == null) return;
 
-        // зняти айтем
         loadout.Set(currentSlot, null);
 
         if (meshSwapper != null)
@@ -158,7 +171,6 @@ public class EquipTabController : MonoBehaviour
     {
         if (!btnRemove || loadout == null) return;
 
-        // активна, якщо в слоті щось одягнено
         var equipped = loadout.Get(currentSlot);
         btnRemove.interactable = equipped != null;
     }
@@ -179,11 +191,23 @@ public class EquipTabController : MonoBehaviour
             if (dmgText) dmgText.text = stats.Damage.ToString();
         }
 
+        if (upgradeManager == null)
+            upgradeManager = ItemUpgradeManager.Instance;
+
         foreach (var s in slotButtons)
         {
             if (s == null) continue;
+
             var item = loadout.Get(s.slot);
             s.SetIcon(item != null ? item.icon : null);
+
+            // ✅ ВАЖЛИВО: завжди стартуємо з false щоб бейдж не "залипав"
+            bool canUpgrade = false;
+
+            if (item != null && upgradeManager != null)
+                canUpgrade = upgradeManager.CanUpgrade(item, out _, out _);
+
+            s.SetUpgradeAvailable(canUpgrade);
         }
     }
 
@@ -200,7 +224,6 @@ public class EquipTabController : MonoBehaviour
         if (item == null) return;
         if (allItems == null) allItems = new List<EquipItemSO>();
 
-        // щоб не дублювати один і той самий SO
         if (!allItems.Contains(item))
             allItems.Add(item);
     }
@@ -209,7 +232,6 @@ public class EquipTabController : MonoBehaviour
     {
         if (loadout == null) return;
 
-        // зняти з усіх слотів
         loadout.Set(EquipmentSlot.RightHand, null);
         loadout.Set(EquipmentSlot.LeftHand, null);
         loadout.Set(EquipmentSlot.Helmet, null);
@@ -217,15 +239,12 @@ public class EquipTabController : MonoBehaviour
         loadout.Set(EquipmentSlot.Legs, null);
         loadout.Set(EquipmentSlot.Belt, null);
 
-        // очистити інвентар (це і є контент ItemPicker)
         if (allItems != null) allItems.Clear();
 
-        // закрити/почистити пікер
         ClearGrid();
         UpdateRemoveButtonState();
         ClosePicker();
 
-        // оновити персонажа
         if (meshSwapper != null)
             meshSwapper.Apply();
 
@@ -248,7 +267,23 @@ public class EquipTabController : MonoBehaviour
         };
 
         rt.RebuildSkillFacesFromEquipped(skills6);
-
         dicePreviewBinder?.ApplyFromRuntime();
+    }
+
+    // ✅ викликається з badge button
+    public void OpenEquippedItemCard(EquipmentSlot slot)
+    {
+        if (loadout == null || itemCardPanel == null) return;
+
+        var item = loadout.Get(slot);
+        if (item == null) return;
+
+        currentSlot = slot;
+
+        itemCardPanel.Show(
+            item,
+            onEquipCb: EquipPickedToCurrentSlot,
+            onUpgradeCb: UpgradePickedItem
+        );
     }
 }

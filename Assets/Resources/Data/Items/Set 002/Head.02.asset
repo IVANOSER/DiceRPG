@@ -17,11 +17,12 @@ MonoBehaviour:
   setNumber: 2
   id: good.hd.002
   displayName: good.hd.002
-  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  icon: {fileID: 21300000, guid: 0dffd8b37ed50dd7b98e058a8f3412dd, type: 3}
   modifiers:
   - type: 0
     value: 20
   skill: {fileID: 11400000, guid: f6ed9e5fc92d9438081a30bd71e1eb4f, type: 2}
+  extraSkills: []
   meshReplaces:
   - target: 7
     mesh: {fileID: 4300372, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}

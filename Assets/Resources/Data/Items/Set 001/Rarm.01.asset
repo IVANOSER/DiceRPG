@@ -17,11 +17,12 @@ MonoBehaviour:
   setNumber: 1
   id: good.rhd.001
   displayName: good.rhd.001
-  icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  icon: {fileID: 21300000, guid: 0f139f628fe7ce529a7aa6083122414d, type: 3}
   modifiers:
   - type: 1
     value: 2
   skill: {fileID: 11400000, guid: 0a4e5139140354f12b9ac2f31f204f52, type: 2}
+  extraSkills: []
   meshReplaces:
   - target: 0
     mesh: {fileID: 4300558, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}

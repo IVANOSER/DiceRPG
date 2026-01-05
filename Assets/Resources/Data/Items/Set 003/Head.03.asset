@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b2cba74da479412cb1cd29ce438dc0f, type: 3}
-  m_Name: Body.02
+  m_Name: Head.03
   m_EditorClassIdentifier: 
   quality: 0
-  slot: 4
-  setNumber: 2
-  id: good.ch.002
-  displayName: good.hd.001
-  icon: {fileID: 21300000, guid: 0dffd8b37ed50dd7b98e058a8f3412dd, type: 3}
+  slot: 3
+  setNumber: 3
+  id: good.hd.003
+  displayName: Halmet03
+  icon: {fileID: 21300000, guid: 3f45609815f16c672a33bf956a5821e8, type: 3}
   modifiers:
   - type: 0
-    value: 40
+    value: 10
   skill: {fileID: 11400000, guid: f6ed9e5fc92d9438081a30bd71e1eb4f, type: 2}
   extraSkills: []
   meshReplaces:
-  - target: 8
-    mesh: {fileID: 4300502, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
+  - target: 7
+    mesh: {fileID: 4300374, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
     materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}

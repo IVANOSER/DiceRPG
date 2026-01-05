@@ -16,12 +16,14 @@ MonoBehaviour:
   slot: 4
   setNumber: 1
   id: good.ch.001
-  displayName: good.hd.001
-  icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  displayName: good.ch.001
+  icon: {fileID: 21300000, guid: 0f139f628fe7ce529a7aa6083122414d, type: 3}
   modifiers:
   - type: 0
     value: 30
   skill: {fileID: 11400000, guid: 0a4e5139140354f12b9ac2f31f204f52, type: 2}
+  extraSkills:
+  - {fileID: 0}
   meshReplaces:
   - target: 8
     mesh: {fileID: 4300500, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}

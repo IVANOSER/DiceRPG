@@ -14,10 +14,12 @@ public class MainTabsSwitcher : MonoBehaviour
     [Header("Canvases")]
     [SerializeField] private GameObject equipCanvas;
     [SerializeField] private GameObject battleCanvas;
+    [SerializeField] private GameObject shopCanvas;
 
     [Header("Tab Views")]
     [SerializeField] private EquipTabView equipTabView;
     [SerializeField] private BattleTabView battleTabView;
+    //[SerializeField] private ShopTabView shopTabView;
 
     [SerializeField] private MainTabId startTab = MainTabId.Battle;
 
@@ -39,9 +41,11 @@ public class MainTabsSwitcher : MonoBehaviour
         // hide current
         if (currentTab == MainTabId.Equip) equipTabView?.OnHide();
         if (currentTab == MainTabId.Battle) battleTabView?.OnHide();
+        //if (currentTab == MainTabId.Shop) shopTabView?.OnHide();
 
         equipCanvas?.SetActive(false);
         battleCanvas?.SetActive(false);
+        shopCanvas?.SetActive(false);
 
         currentTab = tab;
 
@@ -56,6 +60,11 @@ public class MainTabsSwitcher : MonoBehaviour
         {
             battleCanvas?.SetActive(true);
             battleTabView?.OnShow();
+        }
+        if (currentTab == MainTabId.Shop)
+        {
+            shopCanvas?.SetActive(true);
+            //shopTabView?.OnShow();
         }
     }
 }

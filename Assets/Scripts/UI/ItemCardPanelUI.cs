@@ -106,7 +106,7 @@ public class ItemCardPanelUI : MonoBehaviour
             }
 
             if (progressText) progressText.text = $"{state.copies}/{needCopies}";
-            if (costText) costText.text = $"{needGold} gold";
+            if (costText) costText.text = $"{needGold}";
 
             if (upgradeButton)
                 upgradeButton.interactable = upgradeManager.CanUpgrade(item, out _, out _);

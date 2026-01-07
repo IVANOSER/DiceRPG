@@ -1,0 +1,8 @@
+{
+  "weights": [
+    { "quality": "Good", "weight": 70 },
+    { "quality": "Bttr", "weight": 25 },
+    { "quality": "Rare", "weight": 4 },
+    { "quality": "Leg",  "weight": 1 }
+  ]
+}

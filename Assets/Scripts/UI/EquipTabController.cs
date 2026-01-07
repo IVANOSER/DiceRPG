@@ -286,4 +286,30 @@ public class EquipTabController : MonoBehaviour
             onUpgradeCb: UpgradePickedItem
         );
     }
+
+    public void AddItemFromChest(EquipItemSO item, int copies = 1)
+{
+    if (item == null) return;
+
+    if (allItems == null) allItems = new List<EquipItemSO>();
+
+    // 1) Додати в інвентар (лише якщо ще нема)
+    if (!allItems.Contains(item))
+        allItems.Add(item);
+
+    // 2) Додати копії для апгрейду (саме так у тебе рахується можливість апгрейду)
+    if (upgradeManager == null)
+        upgradeManager = ItemUpgradeManager.Instance;
+
+    if (upgradeManager != null)
+        upgradeManager.AddCopies(item, Mathf.Max(1, copies));
+
+    // 3) Оновити UI
+    RefreshAll();
+
+    // 4) Якщо пікер зараз відкритий — перебудувати грід, щоб новий айтем одразу зʼявився
+    if (pickerPanel != null && pickerPanel.activeSelf)
+        OpenSlot(currentSlot);
+}
+
 }

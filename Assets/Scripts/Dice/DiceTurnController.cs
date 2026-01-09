@@ -5,8 +5,7 @@ public class DiceTurnController : MonoBehaviour
     public enum SelectedDie
     {
         None,
-        SkillD12,
-        ModD6
+        SkillD12
     }
 
     [Header("Player refs")]
@@ -15,13 +14,11 @@ public class DiceTurnController : MonoBehaviour
 
     [Header("Optional: selection highlight (rings / outlines)")]
     [SerializeField] private GameObject skillSelectedFx;
-    [SerializeField] private GameObject modSelectedFx;
 
     [Header("State (read-only)")]
     [SerializeField] private SelectedDie selectedDie = SelectedDie.None;
 
     public SkillSO RolledSkill { get; private set; }
-    public ModifierSO RolledMod { get; private set; }
 
     public bool HasRolledThisAction { get; private set; }
     public bool RerollUsed { get; private set; }
@@ -33,16 +30,9 @@ public class DiceTurnController : MonoBehaviour
         RefreshSelectionFx();
     }
 
-    public void SelectModDie()
-    {
-        selectedDie = SelectedDie.ModD6;
-        RefreshSelectionFx();
-    }
-
     private void RefreshSelectionFx()
     {
         if (skillSelectedFx) skillSelectedFx.SetActive(selectedDie == SelectedDie.SkillD12);
-        if (modSelectedFx) modSelectedFx.SetActive(selectedDie == SelectedDie.ModD6);
     }
 
     // ---------- Rolling ----------
@@ -69,7 +59,11 @@ public class DiceTurnController : MonoBehaviour
         if (RerollUsed) return;
 
         switch (selectedDie)
-        {           
+        {
+            case SelectedDie.SkillD12:
+                // Тут має бути твоя логіка ре-ролу SkillD12 (якщо вона в іншому скрипті/анімації — виклич її тут)
+                RerollUsed = true;
+                return;
 
             case SelectedDie.None:
             default:
@@ -88,39 +82,26 @@ public class DiceTurnController : MonoBehaviour
         // Skill decides target and what we do:
         if (RolledSkill.type == SkillType.Attack)
         {
-            // need selected enemy like before
             if (BattleManager.Instance == null) return;
             if (BattleManager.Instance.selectedEnemy == null) return;
 
             int baseAtk = (playerStats != null) ? playerStats.Damage : 1;
             int skillBase = RolledSkill.baseValue;
 
-            int mod = 0;
-            if (RolledMod != null && !RolledMod.isEmpty)
-                mod = RolledMod.attackBonus;
-
-            int totalDamage = baseAtk + skillBase + mod;
+            int totalDamage = baseAtk + skillBase;
             BattleManager.Instance.AttackSelected(totalDamage);
         }
         else if (RolledSkill.type == SkillType.Heal)
         {
             if (playerHealth == null) return;
 
-            int skillBase = RolledSkill.baseValue;
-
-            int mod = 0;
-            if (RolledMod != null && !RolledMod.isEmpty)
-                mod = RolledMod.healBonus;
-
-            int totalHeal = skillBase + mod;
+            int totalHeal = RolledSkill.baseValue;
             playerHealth.Heal(totalHeal);
         }
-
 
         // reset state for next action in this turn (if attacksLeft > 0)
         HasRolledThisAction = false;
         RolledSkill = null;
-        RolledMod = null;
         RerollUsed = false;
 
         // keep selection (or clear it — up to you)
@@ -131,7 +112,7 @@ public class DiceTurnController : MonoBehaviour
     private bool CanRollOrAct()
     {
         if (TurnManager.Instance == null) return false;
-        if (!TurnManager.Instance.IsPlayerTurn) return false;       
+        if (!TurnManager.Instance.IsPlayerTurn) return false;
 
         return true;
     }

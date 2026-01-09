@@ -7,10 +7,8 @@ public class DiceLoadoutRuntime : MonoBehaviour
     public static event Action OnChanged;
 
     [SerializeField] private SkillSO[] skillFaces = new SkillSO[12];
-    [SerializeField] private ModifierSO[] modFaces = new ModifierSO[6];
 
     public SkillSO[] SkillFaces => skillFaces;
-    public ModifierSO[] ModFaces => modFaces;
 
     // Авто-створення runtime завжди, без ручних GO
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -18,7 +16,7 @@ public class DiceLoadoutRuntime : MonoBehaviour
     {
         if (Instance != null) return;
 
-        var go = new GameObject("DiceRuntime");
+        var go = new GameObject("LoadoutRuntime");
         go.AddComponent<DiceLoadoutRuntime>();
         DontDestroyOnLoad(go);
     }
@@ -34,14 +32,15 @@ public class DiceLoadoutRuntime : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        if (skillFaces == null || skillFaces.Length != 12) skillFaces = new SkillSO[12];
-        if (modFaces == null || modFaces.Length != 6) modFaces = new ModifierSO[6];
+        if (skillFaces == null || skillFaces.Length != 12)
+            skillFaces = new SkillSO[12];
     }
 
     public void RebuildSkillFacesFromEquipped(SkillSO[] equipped6)
     {
         int idx = 0;
 
+        // Логіка дублювання 6 слотів у 12 граней (кожен скіл 2 рази)
         for (int i = 0; i < 6; i++)
         {
             SkillSO s = (equipped6 != null && i < equipped6.Length) ? equipped6[i] : null;
@@ -51,23 +50,6 @@ public class DiceLoadoutRuntime : MonoBehaviour
         }
 
         for (; idx < 12; idx++) skillFaces[idx] = null;
-
-        OnChanged?.Invoke();
-    }
-
-    public void SetModFaces(ModifierSO[] faces6)
-    {
-        if (modFaces == null || modFaces.Length != 6) modFaces = new ModifierSO[6];
-
-        if (faces6 == null || faces6.Length != 6)
-        {
-            for (int i = 0; i < 6; i++) modFaces[i] = null;
-            OnChanged?.Invoke();
-            return;
-        }
-
-        for (int i = 0; i < 6; i++)
-            modFaces[i] = faces6[i];
 
         OnChanged?.Invoke();
     }

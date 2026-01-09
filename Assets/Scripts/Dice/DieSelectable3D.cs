@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum DieKind { SkillD12, ModD6 }
+public enum DieKind { SkillD12 }
 
 [RequireComponent(typeof(Collider))]
 public class DieSelectable3D : MonoBehaviour
@@ -11,9 +11,7 @@ public class DieSelectable3D : MonoBehaviour
     public void Select()
     {
         if (diceTurn == null) return;
-
-        if (kind == DieKind.SkillD12) diceTurn.SelectSkillDie();
-        else diceTurn.SelectModDie();
+        if (kind == DieKind.SkillD12)
+            diceTurn.SelectSkillDie();
     }
-    
 }

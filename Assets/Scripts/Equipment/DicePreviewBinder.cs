@@ -5,7 +5,6 @@ public class DicePreviewBinder : MonoBehaviour
 {
     [Header("Manual icon painters (required for visuals)")]
     [SerializeField] private D12FaceIcons_Manual d12Icons;
-    [SerializeField] private D6FaceIcons_Manual d6Icons;
 
     [Header("Optional: logic dice (can be null for now)")]
 
@@ -34,9 +33,7 @@ public class DicePreviewBinder : MonoBehaviour
     private void AutoWire()
     {
         if (d12Icons == null) d12Icons = GetComponentInChildren<D12FaceIcons_Manual>(true);
-        if (d6Icons == null) d6Icons = GetComponentInChildren<D6FaceIcons_Manual>(true);
 
-        
     }
 
     public void ApplyFromRuntime()
@@ -48,6 +45,5 @@ public class DicePreviewBinder : MonoBehaviour
 
         // Візуал іконок
         if (d12Icons != null) d12Icons.Apply(rt.SkillFaces);
-        if (d6Icons != null) d6Icons.Apply(rt.ModFaces);
     }
 }

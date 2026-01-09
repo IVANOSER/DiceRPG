@@ -6,14 +6,16 @@ public class CharacterMeshSlots : MonoBehaviour
     public SkinnedMeshRenderer armUpperRight;
     public SkinnedMeshRenderer armLowerRight;
     public SkinnedMeshRenderer handRight;
+    public SkinnedMeshRenderer weaponRight;
 
     [Header("Left arm")]
     public SkinnedMeshRenderer armUpperLeft;
     public SkinnedMeshRenderer armLowerLeft;
     public SkinnedMeshRenderer handLeft;
+    public SkinnedMeshRenderer weaponLeft;
 
     [Header("Body")]
-    public SkinnedMeshRenderer head;     // ������ ������
+    public SkinnedMeshRenderer head;     
     public SkinnedMeshRenderer helmet;   // helmet mesh
     public SkinnedMeshRenderer chest;
 
@@ -31,10 +33,12 @@ public class CharacterMeshSlots : MonoBehaviour
             BodyPartSlot.ArmUpperRight => armUpperRight,
             BodyPartSlot.ArmLowerRight => armLowerRight,
             BodyPartSlot.HandRight => handRight,
+            BodyPartSlot.WeaponRight => weaponRight,
 
             BodyPartSlot.ArmUpperLeft => armUpperLeft,
             BodyPartSlot.ArmLowerLeft => armLowerLeft,
             BodyPartSlot.HandLeft => handLeft,
+            BodyPartSlot.WeaponLeft => weaponLeft,
 
             BodyPartSlot.Head => head,
             BodyPartSlot.Helmet => helmet,

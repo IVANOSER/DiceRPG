@@ -9,14 +9,18 @@ public enum BodyPartSlot
     ArmUpperLeft,
     ArmLowerLeft,
     HandLeft,
-
+    
     // Body
-    Head,     // базова голова
-    Helmet,   // екіп поверх голови
+    Head,     // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+    Helmet,   // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     Chest,
 
     // Legs
     Hips,
     LegLeft,
-    LegRight
+    LegRight,
+
+    //Weapon
+    WeaponRight,
+    WeaponLeft
 }

@@ -32,3 +32,6 @@ MonoBehaviour:
   - target: 5
     mesh: {fileID: 4300756, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
     materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
+  - target: 13
+    mesh: {fileID: 4300000, guid: bd41423b5a4d9dc4d9254b94df82aa35, type: 3}
+    materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}

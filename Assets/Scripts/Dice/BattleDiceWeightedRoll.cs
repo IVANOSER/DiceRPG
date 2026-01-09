@@ -18,9 +18,7 @@ public class BattleDiceWeightedRoll : MonoBehaviour
         if (!TurnManager.Instance.CanRollDice())
             return;
 
-        
         TurnManager.Instance.MarkRolled();
-
 
         SkillSO skill = PickSkillWeighted(out string dbg);
         if (logTable) Debug.Log(dbg);
@@ -37,7 +35,6 @@ public class BattleDiceWeightedRoll : MonoBehaviour
             TurnManager.Instance.SetPendingSkill(skill);
         }
     }
-
 
     private SkillSO PickSkillWeighted(out string debugText)
     {
@@ -128,11 +125,12 @@ public class BattleDiceWeightedRoll : MonoBehaviour
         if (TurnManager.Instance == null) return;
         if (animator != null && animator.IsPlaying) return;
 
-        
         if (!TurnManager.Instance.CanReroll())
             return;
 
-        TurnManager.Instance.ConsumeReroll();
+        // FREE (RerollsLeft) OR BUY FOR GEMS (from JSON)
+        if (!TurnManager.Instance.TryConsumeRerollOrBuy())
+            return;
 
         SkillSO skill = PickSkillWeighted(out string dbg);
         if (logTable) Debug.Log("[REROLL]\n" + dbg);
@@ -149,5 +147,4 @@ public class BattleDiceWeightedRoll : MonoBehaviour
             TurnManager.Instance.SetPendingSkill(skill);
         }
     }
-
 }

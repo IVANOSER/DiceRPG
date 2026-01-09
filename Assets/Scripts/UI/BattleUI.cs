@@ -17,6 +17,8 @@ public class BattleUI : MonoBehaviour
 
     [SerializeField] private Button rerollButton;
     [SerializeField] private TMP_Text rerollCountText;
+    [SerializeField] private TMP_Text rerollPriceText;
+    [SerializeField] private Image rerollPriceIcon;
 
     private void Awake()
     {
@@ -58,13 +60,43 @@ public class BattleUI : MonoBehaviour
             rerollButton.gameObject.SetActive(visible);
     }
 
-    public void SetRerollInteractable(bool interactable, int rerollsLeft)
-    {
-        if (rerollButton != null)
-            rerollButton.interactable = interactable;
+    public void SetRerollInteractable(bool canReroll, int freeRerollsLeft)
+{
+    if (rerollButton != null)
+        rerollButton.interactable = canReroll;
 
-        if (rerollCountText != null) // якщо є текст
-            rerollCountText.text = rerollsLeft.ToString();
+    
+    if (freeRerollsLeft > 0)
+    {
+        if (rerollCountText != null)
+        {
+            rerollCountText.gameObject.SetActive(true);
+            rerollCountText.text = $"FREE: {freeRerollsLeft}";
+        }
+
+        if (rerollPriceText != null)
+            rerollPriceText.gameObject.SetActive(false);
+            rerollPriceIcon.gameObject.SetActive(false);
+
+        return;
     }
+
+    
+    int cost = DiceRerollJsonConfig.Get().rerollGemCost;
+    bool hasGems = TurnManager.Instance.HasEnoughGemsForReroll();
+
+    if (rerollCountText != null)
+        rerollCountText.gameObject.SetActive(false);
+
+    if (rerollPriceText != null)
+    {
+        rerollPriceText.gameObject.SetActive(true);
+        rerollPriceIcon.gameObject.SetActive(true);
+        rerollPriceText.text = $"{cost}";
+
+        rerollPriceText.color = hasGems ? Color.white : Color.red;
+    }
+}
+
 
 }

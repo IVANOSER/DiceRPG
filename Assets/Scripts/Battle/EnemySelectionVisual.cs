@@ -3,22 +3,48 @@ using UnityEngine;
 public class EnemySelectionVisual : MonoBehaviour
 {
     [SerializeField] private GameObject selectionCylinder;
+    [Header("Pulse")]
+    [SerializeField] private bool pulse = true;
+    [SerializeField] private float pulseSpeed = 2f;
+    [SerializeField] private float pulseAmount = 0.08f;
+
+    private Vector3 baseScale;
+    private bool selected;
 
     private void Awake()
     {
-        // якщо не призначив в ≥нспектор≥ Ч спробуЇмо знайти по ≥мен≥
         if (selectionCylinder == null)
         {
             var t = transform.Find("SelectionCylinder");
             if (t != null) selectionCylinder = t.gameObject;
         }
 
+        if (selectionCylinder != null)
+            baseScale = selectionCylinder.transform.localScale;
+
         SetSelected(false);
     }
 
-    public void SetSelected(bool selected)
+    private void Update()
     {
+        if (!pulse || !selected || selectionCylinder == null) return;
+
+        // пульсуЇмо т≥льки XZ, щоб УстовпФ не стрибав по висот≥
+        float k = 1f + Mathf.Sin(Time.time * pulseSpeed) * pulseAmount;
+        var s = baseScale;
+        s.x = baseScale.x * k;
+        s.z = baseScale.z * k;
+        selectionCylinder.transform.localScale = s;
+    }
+
+    public void SetSelected(bool isSelected)
+    {
+        selected = isSelected;
+
         if (selectionCylinder != null)
-            selectionCylinder.SetActive(selected);
+        {
+            selectionCylinder.SetActive(isSelected);
+            if (!isSelected) selectionCylinder.transform.localScale = baseScale;
+        }
     }
 }

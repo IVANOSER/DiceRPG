@@ -39,6 +39,10 @@ public class Enemy : MonoBehaviour
             strength01: 0.6f
         );
 
+        if (BattleVFXSystem.I != null)
+            BattleVFXSystem.I.SpawnHitImpact(transform);
+
+
         // Реальний дамаг
         health.TakeDamage(dmg);
     }

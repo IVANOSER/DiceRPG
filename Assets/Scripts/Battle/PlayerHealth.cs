@@ -30,10 +30,15 @@ public class PlayerHealth : MonoBehaviour
     }
 
     public void Heal(int amount)
-{
-    if (amount <= 0) return;
-    CurrentHp = Mathf.Min(CurrentHp + amount, MaxHp);
-    // онови UI hp якщо треба
-}
+    {
+        amount = Mathf.Max(0, amount);
+        if (amount == 0) return;
 
+        int before = CurrentHp;
+        CurrentHp = Mathf.Min(CurrentHp + amount, MaxHp);
+
+        // ✅ ОНОВЛЮЄМО UI ТАК САМО ЯК ПРИ ДАМАЗІ
+        if (CurrentHp != before)
+            OnHpChanged?.Invoke(CurrentHp, MaxHp);
+    }
 }

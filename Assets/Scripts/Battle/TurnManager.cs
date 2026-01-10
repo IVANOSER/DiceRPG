@@ -9,6 +9,12 @@ public class TurnManager : MonoBehaviour
     public bool IsPlayerTurn { get; private set; } = true;
     public bool HasRolledThisTurn { get; private set; } = false;
 
+    [Header("Turn Timings")]
+    [SerializeField] private float afterPlayerActionDelay = 0.35f;   // пауза після натискання Action (щоб встиг побачити VFX)
+    [SerializeField] private float beforeEnemiesTurnDelay = 0.45f;   // пауза перед першим ударом ворогів
+    [SerializeField] private float betweenEnemyAttacksDelay = 0.70f; // пауза між ударами ворогів
+    [SerializeField] private float beforePlayerTurnDelay = 0.25f;    // пауза перед поверненням ходу гравцю
+
     [Header("Player refs")]
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private PlayerHealth playerHealth;
@@ -92,14 +98,30 @@ public class TurnManager : MonoBehaviour
         {
             int heal = Mathf.Max(0, PendingSkill.baseValue);
             playerHealth.Heal(heal);
+            Debug.Log("HP after heal = " + playerHealth.CurrentHp);
 
-            // ✅ tabletop heal feedback
+            BattleUI.Instance?.Refresh(0, IsPlayerTurn);
+
+
+            if (BattleVFXSystem.I != null)
+                BattleVFXSystem.I.SpawnHeal(playerHealth.transform);
+
             BattleHitFX.PlayHeal(playerHealth.gameObject);
         }
 
         PendingSkill = null;
         RefreshUI();
         RefreshRerollButton();
+
+        // ✅ Не стартуємо ворогів миттєво — даємо гравцеві побачити свій VFX/анімацію
+        StartCoroutine(EndPlayerTurnAfterDelay());
+    }
+
+    private IEnumerator EndPlayerTurnAfterDelay()
+    {
+        float d = Mathf.Max(0f, afterPlayerActionDelay);
+        if (d > 0f) yield return new WaitForSeconds(d);
+
         EndPlayerTurn();
     }
 
@@ -143,23 +165,33 @@ public class TurnManager : MonoBehaviour
     }
 
     private IEnumerator EnemiesTurn()
-{
-    yield return new WaitForSeconds(0.8f); // пауза після дії гравця
-
-    foreach (var enemy in BattleManager.Instance.AliveEnemies)
     {
-        if (enemy == null) continue;
+        float pre = Mathf.Max(0f, beforeEnemiesTurnDelay);
+        if (pre > 0f) yield return new WaitForSeconds(pre);
 
-        playerHealth.TakeDamage(enemy.AttackDamage);
-        BattleHitFX.PlayHit(playerHealth.gameObject, enemy.transform.position, 0.6f);
+        foreach (var enemy in BattleManager.Instance.AliveEnemies)
+        {
+            if (enemy == null) continue;
 
-        yield return new WaitForSeconds(0.75f); // пауза між ударами
-        if (playerHealth.CurrentHp <= 0) yield break;
+            playerHealth.TakeDamage(enemy.AttackDamage);
+            BattleUI.Instance?.Refresh(0, IsPlayerTurn);
+
+            BattleHitFX.PlayHit(playerHealth.gameObject, enemy.transform.position, 0.6f);
+
+            if (BattleVFXSystem.I != null)
+                BattleVFXSystem.I.SpawnHitImpact(playerHealth.transform);
+
+            float mid = Mathf.Max(0f, betweenEnemyAttacksDelay);
+            if (mid > 0f) yield return new WaitForSeconds(mid);
+
+            if (playerHealth.CurrentHp <= 0) yield break;
+        }
+
+        float post = Mathf.Max(0f, beforePlayerTurnDelay);
+        if (post > 0f) yield return new WaitForSeconds(post);
+
+        BeginPlayerTurn();
     }
-
-    BeginPlayerTurn();
-}
-
 
     // -------- UI refresh --------
     private void RefreshUI()

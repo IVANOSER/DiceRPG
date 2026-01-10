@@ -6,16 +6,20 @@ public class CharacterMeshSlots : MonoBehaviour
     public SkinnedMeshRenderer armUpperRight;
     public SkinnedMeshRenderer armLowerRight;
     public SkinnedMeshRenderer handRight;
-    public SkinnedMeshRenderer weaponRight;
+
+    // Weapons are NOT skinned. Use MeshFilter (and MeshRenderer on the same object for materials).
+    public MeshFilter weaponRight;
 
     [Header("Left arm")]
     public SkinnedMeshRenderer armUpperLeft;
     public SkinnedMeshRenderer armLowerLeft;
     public SkinnedMeshRenderer handLeft;
-    public SkinnedMeshRenderer weaponLeft;
+
+    // Weapons are NOT skinned. Use MeshFilter (and MeshRenderer on the same object for materials).
+    public MeshFilter weaponLeft;
 
     [Header("Body")]
-    public SkinnedMeshRenderer head;     
+    public SkinnedMeshRenderer head;
     public SkinnedMeshRenderer helmet;   // helmet mesh
     public SkinnedMeshRenderer chest;
 
@@ -26,19 +30,20 @@ public class CharacterMeshSlots : MonoBehaviour
     public SkinnedMeshRenderer legLeft;
     public SkinnedMeshRenderer legRight;
 
-    public SkinnedMeshRenderer Get(BodyPartSlot slot)
+    /// <summary>
+    /// Returns SkinnedMeshRenderer for body parts (NOT weapons).
+    /// </summary>
+    public SkinnedMeshRenderer GetSkinned(BodyPartSlot slot)
     {
         return slot switch
         {
             BodyPartSlot.ArmUpperRight => armUpperRight,
             BodyPartSlot.ArmLowerRight => armLowerRight,
             BodyPartSlot.HandRight => handRight,
-            BodyPartSlot.WeaponRight => weaponRight,
 
             BodyPartSlot.ArmUpperLeft => armUpperLeft,
             BodyPartSlot.ArmLowerLeft => armLowerLeft,
             BodyPartSlot.HandLeft => handLeft,
-            BodyPartSlot.WeaponLeft => weaponLeft,
 
             BodyPartSlot.Head => head,
             BodyPartSlot.Helmet => helmet,
@@ -48,7 +53,26 @@ public class CharacterMeshSlots : MonoBehaviour
             BodyPartSlot.LegLeft => legLeft,
             BodyPartSlot.LegRight => legRight,
 
+            BodyPartSlot.WeaponRight => null,
+            BodyPartSlot.WeaponLeft => null,
+
             _ => null
         };
     }
+
+    /// <summary>
+    /// Returns MeshFilter for weapons (NOT skinned).
+    /// </summary>
+    public MeshFilter GetWeapon(BodyPartSlot slot)
+    {
+        return slot switch
+        {
+            BodyPartSlot.WeaponRight => weaponRight,
+            BodyPartSlot.WeaponLeft => weaponLeft,
+            _ => null
+        };
+    }
+
+    // Backward compatible name (if you used Get() everywhere for skinned parts).
+    public SkinnedMeshRenderer Get(BodyPartSlot slot) => GetSkinned(slot);
 }

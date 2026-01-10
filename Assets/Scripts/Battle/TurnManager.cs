@@ -92,6 +92,9 @@ public class TurnManager : MonoBehaviour
         {
             int heal = Mathf.Max(0, PendingSkill.baseValue);
             playerHealth.Heal(heal);
+
+            // ✅ tabletop heal feedback
+            BattleHitFX.PlayHeal(playerHealth.gameObject);
         }
 
         PendingSkill = null;
@@ -140,20 +143,23 @@ public class TurnManager : MonoBehaviour
     }
 
     private IEnumerator EnemiesTurn()
+{
+    yield return new WaitForSeconds(0.8f); // пауза після дії гравця
+
+    foreach (var enemy in BattleManager.Instance.AliveEnemies)
     {
-        foreach (var enemy in BattleManager.Instance.AliveEnemies)
-        {
-            if (enemy == null) continue;
+        if (enemy == null) continue;
 
-            playerHealth.TakeDamage(enemy.AttackDamage);
-            yield return new WaitForSeconds(0.4f);
+        playerHealth.TakeDamage(enemy.AttackDamage);
+        BattleHitFX.PlayHit(playerHealth.gameObject, enemy.transform.position, 0.6f);
 
-            if (playerHealth.CurrentHp <= 0)
-                yield break;
-        }
-
-        BeginPlayerTurn();
+        yield return new WaitForSeconds(0.75f); // пауза між ударами
+        if (playerHealth.CurrentHp <= 0) yield break;
     }
+
+    BeginPlayerTurn();
+}
+
 
     // -------- UI refresh --------
     private void RefreshUI()
@@ -289,14 +295,9 @@ public class TurnManager : MonoBehaviour
             if (amount <= 0) return true;
             if (!Ensure()) return false;
 
-            // Try methods in order:
-            // HasGems(int)
             if (TryInvokeBool("HasGems", amount, out bool b1)) return b1;
-            // CanSpendGems(int)
             if (TryInvokeBool("CanSpendGems", amount, out bool b2)) return b2;
-            // TrySpendGems(int) as check (NOT spending) - skip to avoid side effects
 
-            // Try property Gems / CurrentGems / gems
             if (TryGetIntProp(new[] { "Gems", "CurrentGems", "gems" }, out int gems))
                 return gems >= amount;
 
@@ -309,17 +310,13 @@ public class TurnManager : MonoBehaviour
             if (amount <= 0) return;
             if (!Ensure()) return;
 
-            // TrySpendGems(int) returning bool
             if (TryInvokeBool("TrySpendGems", amount, out bool ok))
             {
                 if (!ok) Debug.LogWarning("[CurrencyWalletBridge] TrySpendGems returned false.");
                 return;
             }
 
-            // SpendGems(int)
             if (TryInvokeVoid("SpendGems", amount)) return;
-
-            // RemoveGems(int)
             if (TryInvokeVoid("RemoveGems", amount)) return;
 
             Debug.LogWarning("[CurrencyWalletBridge] Can't find Spend method (TrySpendGems/SpendGems/RemoveGems).");
@@ -376,18 +373,18 @@ public class TurnManager : MonoBehaviour
             }
             return false;
         }
-
     }
+
     public bool HasEnoughGemsForReroll()
-        {
-            if (rerollGemCost <= 0)
+    {
+        if (rerollGemCost <= 0)
             return true;
 
-            return CurrencyWalletBridge.HasGems(rerollGemCost);
-        }
+        return CurrencyWalletBridge.HasGems(rerollGemCost);
+    }
 
-        public int GetRerollGemCost()
-        {
-            return rerollGemCost;
-        }
+    public int GetRerollGemCost()
+    {
+        return rerollGemCost;
+    }
 }

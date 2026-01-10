@@ -9,21 +9,37 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        if (health == null) health = GetComponent<EnemyHealth>();
+        if (health == null)
+            health = GetComponent<EnemyHealth>();
     }
 
     private void OnEnable()
     {
-        if (health != null) health.OnDied.AddListener(Die);
+        if (health != null)
+            health.OnDied.AddListener(Die);
     }
 
     private void OnDisable()
     {
-        if (health != null) health.OnDied.RemoveListener(Die);
+        if (health != null)
+            health.OnDied.RemoveListener(Die);
     }
 
     public void TakeDamage(int dmg)
     {
+
+        Vector3 hitFrom =
+            Camera.main != null
+                ? Camera.main.transform.position
+                : transform.position + Vector3.back;
+
+        BattleHitFX.PlayHit(
+            gameObject,
+            hitFrom,
+            strength01: 0.6f
+        );
+
+        // Реальний дамаг
         health.TakeDamage(dmg);
     }
 

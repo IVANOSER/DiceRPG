@@ -27,10 +27,10 @@ MonoBehaviour:
   meshReplaces:
   - target: 0
     mesh: {fileID: 4300562, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
-    materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
+    materialOverride: {fileID: 2100000, guid: a7ebd2f110dcb8342a3331a43aea4115, type: 2}
   - target: 1
     mesh: {fileID: 4300646, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
-    materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
+    materialOverride: {fileID: 2100000, guid: a7ebd2f110dcb8342a3331a43aea4115, type: 2}
   - target: 12
     mesh: {fileID: 4300000, guid: 28c16d6a2f9d0d149a647997134995de, type: 3}
-    materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
+    materialOverride: {fileID: 2100000, guid: a7ebd2f110dcb8342a3331a43aea4115, type: 2}

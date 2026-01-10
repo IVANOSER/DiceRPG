@@ -36,6 +36,15 @@ public class WorldSphere : MonoBehaviour
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private PlayerHealth playerHealth;
 
+    [Header("Miniatures sway while rotating")]
+    [SerializeField] private bool swayMiniaturesDuringRotation = true;
+
+    [Tooltip("Optional: player miniature root (where MiniatureWalkSway exists in children). If empty, will use playerHealth transform.")]
+    [SerializeField] private Transform playerMiniRoot;
+
+    [Tooltip("Optional: override step speed while rotating (0 = keep prefab values).")]
+    [SerializeField] private float overrideStepFrequency = 0f;
+
     private void Awake()
     {
         Instance = this;
@@ -83,6 +92,9 @@ public class WorldSphere : MonoBehaviour
 
     public IEnumerator Rotate360AndSpawnNextWave()
     {
+        if (swayMiniaturesDuringRotation)
+            SetAllMiniaturesMoving(true);
+
         float rotated = 0f;
         bool spawned = false;
 
@@ -102,8 +114,10 @@ public class WorldSphere : MonoBehaviour
 
             yield return null;
         }
-    }
 
+        if (swayMiniaturesDuringRotation)
+            SetAllMiniaturesMoving(false);
+    }
 
     private Vector3 GetRotationAxis()
     {
@@ -129,7 +143,38 @@ public class WorldSphere : MonoBehaviour
 
         playerStats.Recalculate(loadout);
         playerHealth.ApplyMaxHpFromStats(playerStats.HP, healToFull: false); // true якщо хочеш фулл хіл між хвилями
-        TurnManager.Instance.BeginPlayerTurn();
+
+        
         TurnManager.Instance.BeginPlayerTurn();
     }
+
+    // ---------------------------
+    // Miniature Walk Sway Helpers
+    // ---------------------------
+
+    private void SetAllMiniaturesMoving(bool moving)
+    {
+        // Player
+        Transform root = playerMiniRoot != null ? playerMiniRoot : (playerHealth != null ? playerHealth.transform : null);
+        if (root != null)
+            SetMovingOnHierarchy(root, moving);
+
+        // Enemies
+        if (enemiesParent != null)
+            SetMovingOnHierarchy(enemiesParent, moving);
+    }
+
+    private void SetMovingOnHierarchy(Transform root, bool moving)
+    {
+        var sways = root.GetComponentsInChildren<MiniatureWalkSway>(true);
+        for (int i = 0; i < sways.Length; i++)
+        {
+            if (overrideStepFrequency > 0f)
+                sways[i].SetStepFrequency(overrideStepFrequency);
+
+            sways[i].SetMoving(moving);
+        }
+    }
+
+
 }

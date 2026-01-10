@@ -138,6 +138,7 @@ Material:
     - _QueueOffset: 0
     - _Smoothness: 0.2
     - _Tattoo_Amount: 1
+    - _XRMotionVectorsPass: 1
     - __dirty: 0
     m_Colors:
     - _Color_BodyArt: {r: 1, g: 0.42105263, b: 0, a: 0}

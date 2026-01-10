@@ -27,7 +27,7 @@ MonoBehaviour:
   meshReplaces:
   - target: 10
     mesh: {fileID: 4300848, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
-    materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
+    materialOverride: {fileID: 2100000, guid: 885cb68bae9063d48bf6e3067524d843, type: 2}
   - target: 11
     mesh: {fileID: 4300888, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
-    materialOverride: {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
+    materialOverride: {fileID: 2100000, guid: a7ebd2f110dcb8342a3331a43aea4115, type: 2}

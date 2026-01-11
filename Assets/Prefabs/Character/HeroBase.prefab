@@ -2811,11 +2811,11 @@ MonoBehaviour:
   armUpperRight: {fileID: 4888535078266901685}
   armLowerRight: {fileID: 1535741658564429746}
   handRight: {fileID: 2638093161603403099}
-  weaponRight: {fileID: 2637150758350366243}
+  weaponRight: {fileID: 8358686059832023235}
   armUpperLeft: {fileID: 2396781755061976012}
   armLowerLeft: {fileID: 8761817938184935830}
   handLeft: {fileID: 5747388796361093589}
-  weaponLeft: {fileID: 2701752379848854758}
+  weaponLeft: {fileID: 1394421780182623120}
   head: {fileID: 2930987412632946442}
   helmet: {fileID: 3082921004652637521}
   chest: {fileID: 6356055780982822429}
@@ -31203,7 +31203,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6420441995615305195, guid: e1f88fd0fd797774f98ea1565a344cd0, type: 3}
       propertyPath: m_VersionIndex
-      value: 4017
+      value: 4059
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -31587,7 +31587,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1586301124448702, guid: 181c5c49a962f96468635ea191e01184, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2701752379848854758}
+      addedObject: {fileID: 1394421780182623120}
+    - targetCorrespondingSourceObject: {fileID: 1586301124448702, guid: 181c5c49a962f96468635ea191e01184, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3029518232501453293}
   m_SourcePrefab: {fileID: 100100000, guid: 181c5c49a962f96468635ea191e01184, type: 3}
 --- !u!4 &6803617343519422950 stripped
 Transform:
@@ -31599,8 +31602,16 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1586301124448702, guid: 181c5c49a962f96468635ea191e01184, type: 3}
   m_PrefabInstance: {fileID: 6807894441983787924}
   m_PrefabAsset: {fileID: 0}
---- !u!137 &2701752379848854758
-SkinnedMeshRenderer:
+--- !u!33 &1394421780182623120
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809404528845869610}
+  m_Mesh: {fileID: 4300000, guid: 1c6172cca7780d549a35ed79ce6d37c6, type: 3}
+--- !u!23 &3029518232501453293
+MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -31614,7 +31625,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 3
+  m_RayTracingMode: 2
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
@@ -31622,12 +31633,12 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a7ebd2f110dcb8342a3331a43aea4115, type: 2}
+  - {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
+  m_ProbeAnchor: {fileID: 5743437097904896100}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_ReceiveGI: 1
@@ -31643,18 +31654,7 @@ SkinnedMeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300000, guid: 1c6172cca7780d549a35ed79ce6d37c6, type: 3}
-  m_Bones: []
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 5743437097904896100}
-  m_AABB:
-    m_Center: {x: -0.00002228655, y: 0.498733, z: 0.16790473}
-    m_Extent: {x: 0.044140622, y: 0.7206929, z: 0.24121094}
-  m_DirtyAABB: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1001 &7293749646167389267
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31879,15 +31879,26 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1586301124448702, guid: 181c5c49a962f96468635ea191e01184, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2637150758350366243}
+      addedObject: {fileID: 8358686059832023235}
+    - targetCorrespondingSourceObject: {fileID: 1586301124448702, guid: 181c5c49a962f96468635ea191e01184, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9005390628569787930}
   m_SourcePrefab: {fileID: 100100000, guid: 181c5c49a962f96468635ea191e01184, type: 3}
 --- !u!1 &7603115414624797715 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1586301124448702, guid: 181c5c49a962f96468635ea191e01184, type: 3}
   m_PrefabInstance: {fileID: 7603786548311856557}
   m_PrefabAsset: {fileID: 0}
---- !u!137 &2637150758350366243
-SkinnedMeshRenderer:
+--- !u!33 &8358686059832023235
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7603115414624797715}
+  m_Mesh: {fileID: 4300000, guid: 1c6172cca7780d549a35ed79ce6d37c6, type: 3}
+--- !u!23 &9005390628569787930
+MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -31901,7 +31912,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 3
+  m_RayTracingMode: 2
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
@@ -31909,12 +31920,12 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a7ebd2f110dcb8342a3331a43aea4115, type: 2}
+  - {fileID: 2100000, guid: 29d3b71d75afcbb4fa8dc2c94e27e2ee, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
+  m_ProbeAnchor: {fileID: 7348891705518714386}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_ReceiveGI: 1
@@ -31930,18 +31941,7 @@ SkinnedMeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300000, guid: 1c6172cca7780d549a35ed79ce6d37c6, type: 3}
-  m_Bones: []
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 7348891705518714386}
-  m_AABB:
-    m_Center: {x: -0.00002228655, y: 0.498733, z: 0.16790473}
-    m_Extent: {x: 0.044140622, y: 0.7206929, z: 0.24121094}
-  m_DirtyAABB: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!4 &7608587023038820319 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4840057146292850, guid: 181c5c49a962f96468635ea191e01184, type: 3}

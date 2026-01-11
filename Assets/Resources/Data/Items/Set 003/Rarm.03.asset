@@ -22,7 +22,7 @@ MonoBehaviour:
   modifiers:
   - type: 1
     value: 2
-  skill: {fileID: 11400000, guid: f6ed9e5fc92d9438081a30bd71e1eb4f, type: 2}
+  skill: {fileID: 11400000, guid: ac369e048c2d44ae893e353ac947f6f6, type: 2}
   extraSkills: []
   meshReplaces:
   - target: 0

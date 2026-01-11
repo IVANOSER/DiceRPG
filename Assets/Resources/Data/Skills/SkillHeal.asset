@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61934f5fa51204fd49d5706ad1e2ae8c, type: 3}
   m_Name: SkillHeal
   m_EditorClassIdentifier: 
+  displayName: Heal
   type: 1
   baseValue: 20
-  icon: {fileID: 21300000, guid: a54c9a2de483cf242a2f423fed1e4790, type: 3}
+  icon: {fileID: 21300000, guid: e31d9a14f97ab48d58704e4d13bc0eeb, type: 3}
+  statusType: 0
+  statusDurationTurns: 1
   dropWeight: 1

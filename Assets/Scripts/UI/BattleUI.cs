@@ -45,7 +45,7 @@ public class BattleUI : MonoBehaviour
         if (actionText)
         {
             if (pendingSkill == null) actionText.text = "Action";
-            else actionText.text = pendingSkill.type == SkillType.Attack ? "Attack" : "Heal";
+            else actionText.text = pendingSkill.displayName;
         }
     }
     public void SetRollInteractable(bool interactable)
@@ -83,7 +83,6 @@ public class BattleUI : MonoBehaviour
 
     
     int cost = DiceRerollJsonConfig.Get().rerollGemCost;
-    bool hasGems = TurnManager.Instance.HasEnoughGemsForReroll();
 
     if (rerollCountText != null)
         rerollCountText.gameObject.SetActive(false);
@@ -93,8 +92,6 @@ public class BattleUI : MonoBehaviour
         rerollPriceText.gameObject.SetActive(true);
         rerollPriceIcon.gameObject.SetActive(true);
         rerollPriceText.text = $"{cost}";
-
-        rerollPriceText.color = hasGems ? Color.white : Color.red;
     }
 }
 

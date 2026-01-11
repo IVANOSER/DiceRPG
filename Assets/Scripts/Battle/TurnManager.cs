@@ -78,44 +78,28 @@ public class TurnManager : MonoBehaviour
 
     // -------- Action --------
     public void OnActionPressed()
+{
+    if (!IsPlayerTurn) return;
+    if (PendingSkill == null) return;
+
+    GameObject target = null;
+    if (BattleManager.Instance != null && BattleManager.Instance.selectedEnemy != null)
+        target = BattleManager.Instance.selectedEnemy.gameObject;
+
+    bool ok = SkillResolver.Apply(PendingSkill, playerStats, playerHealth, target);
+    if (!ok)
     {
-        if (!IsPlayerTurn) return;
-        if (PendingSkill == null) return;
-
-        if (PendingSkill.type == SkillType.Attack)
-        {
-            if (BattleManager.Instance == null || BattleManager.Instance.selectedEnemy == null)
-            {
-                RefreshUI();
-                return;
-            }
-
-            int dmgBase = (playerStats != null) ? playerStats.Damage : 1;
-            int dmg = dmgBase + PendingSkill.baseValue;
-            BattleManager.Instance.AttackSelected(dmg);
-        }
-        else if (PendingSkill.type == SkillType.Heal)
-        {
-            int heal = Mathf.Max(0, PendingSkill.baseValue);
-            playerHealth.Heal(heal);
-            Debug.Log("HP after heal = " + playerHealth.CurrentHp);
-
-            BattleUI.Instance?.Refresh(0, IsPlayerTurn);
-
-
-            if (BattleVFXSystem.I != null)
-                BattleVFXSystem.I.SpawnHeal(playerHealth.transform);
-
-            BattleHitFX.PlayHeal(playerHealth.gameObject);
-        }
-
-        PendingSkill = null;
         RefreshUI();
-        RefreshRerollButton();
-
-        // ✅ Не стартуємо ворогів миттєво — даємо гравцеві побачити свій VFX/анімацію
-        StartCoroutine(EndPlayerTurnAfterDelay());
+        return;
     }
+
+    PendingSkill = null;
+    RefreshUI();
+    RefreshRerollButton();
+
+    StartCoroutine(EndPlayerTurnAfterDelay());
+}
+
 
     private IEnumerator EndPlayerTurnAfterDelay()
     {
@@ -126,15 +110,16 @@ public class TurnManager : MonoBehaviour
     }
 
     public bool CanPressAction()
-    {
-        if (!IsPlayerTurn) return false;
-        if (PendingSkill == null) return false;
+{
+    if (!IsPlayerTurn) return false;
+    if (PendingSkill == null) return false;
 
-        if (PendingSkill.type == SkillType.Attack)
-            return BattleManager.Instance != null && BattleManager.Instance.selectedEnemy != null;
+    if (PendingSkill.type == SkillType.Attack || PendingSkill.type == SkillType.Status)
+        return BattleManager.Instance != null && BattleManager.Instance.selectedEnemy != null;
 
-        return true;
-    }
+    return true;
+}
+
 
     public void RefreshActionState()
     {
@@ -170,22 +155,46 @@ public class TurnManager : MonoBehaviour
         if (pre > 0f) yield return new WaitForSeconds(pre);
 
         foreach (var enemy in BattleManager.Instance.AliveEnemies)
-        {
-            if (enemy == null) continue;
+{
+    if (enemy == null) continue;
 
-            playerHealth.TakeDamage(enemy.AttackDamage);
-            BattleUI.Instance?.Refresh(0, IsPlayerTurn);
+    var statuses = enemy.GetComponent<StatusController>();
+    statuses?.TurnStart();
 
-            BattleHitFX.PlayHit(playerHealth.gameObject, enemy.transform.position, 0.6f);
+    
+    if (statuses != null && statuses.Has<StunStatus>())
+    {
+        // тут можна VFX / іконку / текст "STUN"
+        Debug.Log($"{enemy.name} is stunned — skip turn");
 
-            if (BattleVFXSystem.I != null)
-                BattleVFXSystem.I.SpawnHitImpact(playerHealth.transform);
+        yield return new WaitForSeconds(betweenEnemyAttacksDelay);
 
-            float mid = Mathf.Max(0f, betweenEnemyAttacksDelay);
-            if (mid > 0f) yield return new WaitForSeconds(mid);
+        statuses.TurnEnd(); // зменшуємо stun
+        continue; 
+    }
+    // ===========================
 
-            if (playerHealth.CurrentHp <= 0) yield break;
-        }
+    // ---- ЗВИЧАЙНА АТАКА ВОРОГА ----
+    playerHealth.TakeDamage(enemy.AttackDamage);
+    BattleUI.Instance?.Refresh(0, IsPlayerTurn);
+
+    BattleHitFX.PlayHit(
+        playerHealth.gameObject,
+        enemy.transform.position,
+        0.6f
+    );
+
+    if (BattleVFXSystem.I != null)
+        BattleVFXSystem.I.SpawnHitImpact(playerHealth.transform);
+
+    yield return new WaitForSeconds(betweenEnemyAttacksDelay);
+
+    statuses?.TurnEnd();
+
+    if (playerHealth.CurrentHp <= 0)
+        yield break;
+}
+
 
         float post = Mathf.Max(0f, beforePlayerTurnDelay);
         if (post > 0f) yield return new WaitForSeconds(post);

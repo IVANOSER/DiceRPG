@@ -4,8 +4,7 @@ public class EquipTabView : MonoBehaviour
 {
     [SerializeField] private GameObject characterPreviewRoot; 
     [SerializeField] private GameObject itemPickerRoot;
-    [SerializeField] private GameObject DiceSkill; 
-    [SerializeField] private GameObject DiceMod;      
+    [SerializeField] private GameObject DiceSkill;      
 
     public void OnShow()
     {
@@ -15,7 +14,6 @@ public class EquipTabView : MonoBehaviour
 
         if (DiceSkill) DiceSkill.SetActive(true);
 
-        if (DiceMod) DiceMod.SetActive(true);
     }
 
     public void OnHide()
@@ -26,8 +24,6 @@ public class EquipTabView : MonoBehaviour
         if (characterPreviewRoot) characterPreviewRoot.SetActive(false);
 
         if (DiceSkill) DiceSkill.SetActive(false);
-
-        if (DiceMod) DiceMod.SetActive(false);
 
     }
 }

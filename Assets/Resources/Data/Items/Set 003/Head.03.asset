@@ -26,5 +26,5 @@ MonoBehaviour:
   extraSkills: []
   meshReplaces:
   - target: 7
-    mesh: {fileID: 4300930, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
+    mesh: {fileID: 4300374, guid: 98a56ff2c8ee98645a4d3f79fa1506c5, type: 3}
     materialOverride: {fileID: 2100000, guid: a7ebd2f110dcb8342a3331a43aea4115, type: 2}

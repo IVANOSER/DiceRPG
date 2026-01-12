@@ -22,5 +22,7 @@ public enum BodyPartSlot
 
     //Weapon
     WeaponRight,
-    WeaponLeft
+    WeaponLeft,
+
+    Cover
 }

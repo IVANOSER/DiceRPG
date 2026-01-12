@@ -1,3 +1,4 @@
+using TMPro.Examples;
 using UnityEngine;
 
 public enum MainTabId
@@ -22,6 +23,8 @@ public class MainTabsSwitcher : MonoBehaviour
     //[SerializeField] private ShopTabView shopTabView;
 
     [SerializeField] private MainTabId startTab = MainTabId.Battle;
+
+    public CameraTabController cameraController;
 
     private MainTabId currentTab = MainTabId.Equip;
 
@@ -54,12 +57,14 @@ public class MainTabsSwitcher : MonoBehaviour
         {
             equipCanvas?.SetActive(true);
             equipTabView?.OnShow();
+            cameraController.MoveToEquip();
         }
 
         if (currentTab == MainTabId.Battle)
         {
             battleCanvas?.SetActive(true);
             battleTabView?.OnShow();
+            cameraController.MoveToBattle();
         }
         if (currentTab == MainTabId.Shop)
         {

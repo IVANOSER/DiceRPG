@@ -20,7 +20,8 @@ public class CharacterMeshSlots : MonoBehaviour
 
     [Header("Body")]
     public SkinnedMeshRenderer head;
-    public SkinnedMeshRenderer helmet;   // helmet mesh
+    public SkinnedMeshRenderer helmet;
+    public SkinnedMeshRenderer cover;
     public SkinnedMeshRenderer chest;
 
     [Header("Belt")]
@@ -29,6 +30,8 @@ public class CharacterMeshSlots : MonoBehaviour
     [Header("Legs")]
     public SkinnedMeshRenderer legLeft;
     public SkinnedMeshRenderer legRight;
+
+
 
     /// <summary>
     /// Returns SkinnedMeshRenderer for body parts (NOT weapons).
@@ -47,14 +50,12 @@ public class CharacterMeshSlots : MonoBehaviour
 
             BodyPartSlot.Head => head,
             BodyPartSlot.Helmet => helmet,
+            BodyPartSlot.Cover => cover,
             BodyPartSlot.Chest => chest,
 
             BodyPartSlot.Hips => hips,
             BodyPartSlot.LegLeft => legLeft,
-            BodyPartSlot.LegRight => legRight,
-
-            BodyPartSlot.WeaponRight => null,
-            BodyPartSlot.WeaponLeft => null,
+            BodyPartSlot.LegRight => legRight,           
 
             _ => null
         };

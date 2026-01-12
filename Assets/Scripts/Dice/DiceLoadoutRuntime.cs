@@ -6,6 +6,7 @@ public class DiceLoadoutRuntime : MonoBehaviour
     public static DiceLoadoutRuntime Instance { get; private set; }
     public static event Action OnChanged;
 
+
     [SerializeField] private SkillSO[] skillFaces = new SkillSO[12];
 
     public SkillSO[] SkillFaces => skillFaces;

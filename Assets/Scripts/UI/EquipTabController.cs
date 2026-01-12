@@ -75,6 +75,7 @@ public class EquipTabController : MonoBehaviour
 
         RefreshAll();
         ClosePicker();
+        
 
         Invoke(nameof(RefreshDiceFromEquipped), 0f);
     }

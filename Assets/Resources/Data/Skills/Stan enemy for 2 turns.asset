@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61934f5fa51204fd49d5706ad1e2ae8c, type: 3}
-  m_Name: SkillDMG
+  m_Name: Stan enemy for 2 turns
   m_EditorClassIdentifier: 
-  displayName: Attack
-  type: 0
+  displayName: Stan
+  type: 2
   baseValue: 1
-  icon: {fileID: 21300000, guid: a7edf8b500cd85847ba66e2dd534174d, type: 3}
-  statusType: 0
-  statusDurationTurns: 1
-  dropWeight: 3
+  icon: {fileID: 21300000, guid: f5fb22a4ff5cc4fa2960abb8828a4bcc, type: 3}
+  statusType: 1
+  statusDurationTurns: 2
+  dropWeight: 1
   requiresTarget: 1

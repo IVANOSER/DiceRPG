@@ -40,7 +40,7 @@ public class StatusController : MonoBehaviour
         OnStatusesChanged?.Invoke();
     }
 
-    // опційно: щоб “перенакладання” стану робило max тривалості, а не дубль
+    // --- STUN (як у тебе) ---
     public void RefreshOrAddStun(int turns)
     {
         for (int i = 0; i < _effects.Count; i++)
@@ -53,5 +53,35 @@ public class StatusController : MonoBehaviour
             }
         }
         Add(new StunStatus(turns));
+    }
+
+    // --- BURN (нове) ---
+    public void RefreshOrAddBurn(int turns, int dmgPerTurn)
+    {
+        for (int i = 0; i < _effects.Count; i++)
+        {
+            if (_effects[i] is BurnStatus burn)
+            {
+                burn.RefreshToAtLeast(turns);
+                OnStatusesChanged?.Invoke();
+                return;
+            }
+        }
+        Add(new BurnStatus(turns, dmgPerTurn));
+    }
+
+    // --- SHIELD (нове) ---
+    public bool TryUseShieldAbsorb()
+    {
+        for (int i = 0; i < _effects.Count; i++)
+        {
+            if (_effects[i] is ShieldStatus shield)
+            {
+                bool absorbed = shield.TryAbsorbHit();
+                if (absorbed) OnStatusesChanged?.Invoke();
+                return absorbed;
+            }
+        }
+        return false;
     }
 }

@@ -9,26 +9,43 @@ public class PlayerHealth : MonoBehaviour
     public UnityEvent<int, int> OnHpChanged; // current, max
     public UnityEvent OnDied;
 
+    /// <summary>
+    /// Викликається при старті бою / зміні статів (BattlePlayerSetup)
+    /// </summary>
     public void ApplyMaxHpFromStats(int maxHp, bool healToFull = true)
     {
         MaxHp = Mathf.Max(1, maxHp);
 
-        if (healToFull) CurrentHp = MaxHp;
-        else CurrentHp = Mathf.Clamp(CurrentHp, 0, MaxHp);
+        if (healToFull)
+            CurrentHp = MaxHp;
+        else
+            CurrentHp = Mathf.Clamp(CurrentHp, 0, MaxHp);
 
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
     }
 
+    /// <summary>
+    /// Отримання урону (з урахуванням Shield статусу)
+    /// </summary>
     public void TakeDamage(int dmg)
     {
+        // 🛡️ Shield поглинає АТАКУ
+        var statuses = GetComponent<StatusController>();
+        if (statuses != null && statuses.TryUseShieldAbsorb())
+            return;
+
         dmg = Mathf.Max(0, dmg);
         CurrentHp = Mathf.Max(0, CurrentHp - dmg);
+
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
 
         if (CurrentHp <= 0)
             OnDied?.Invoke();
     }
 
+    /// <summary>
+    /// Лікування
+    /// </summary>
     public void Heal(int amount)
     {
         amount = Mathf.Max(0, amount);
@@ -37,8 +54,16 @@ public class PlayerHealth : MonoBehaviour
         int before = CurrentHp;
         CurrentHp = Mathf.Min(CurrentHp + amount, MaxHp);
 
-        // ✅ ОНОВЛЮЄМО UI ТАК САМО ЯК ПРИ ДАМАЗІ
         if (CurrentHp != before)
             OnHpChanged?.Invoke(CurrentHp, MaxHp);
+    }
+
+    /// <summary>
+    /// Повне лікування (для self-ульт)
+    /// </summary>
+    public void HealFull()
+    {
+        CurrentHp = MaxHp;
+        OnHpChanged?.Invoke(CurrentHp, MaxHp);
     }
 }

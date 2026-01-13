@@ -1,0 +1,26 @@
+{
+  "charge": {
+    "maxCharge": 100,
+    "chargePerAttack": 25
+  },
+
+  "aoe": {
+    "damage": 8,
+    "burnTurns": 2,
+    "burnDamagePerTurn": 3,
+    "stunTurns": 1
+  },
+
+  "single": {
+    "damage": 18,
+    "burnTurns": 2,
+    "burnDamagePerTurn": 3,
+    "stunTurns": 1
+  },
+
+  "self": {
+    "healAmount": 0,
+    "healFull": false,
+    "shieldAbsorbs": 3
+  }
+}

@@ -79,6 +79,13 @@ public class TurnManager : MonoBehaviour
     // -------- Action --------
     public void OnActionPressed()
 {
+    // ✅ Ultimate charge: за кожну атаку +Y
+    if (PendingSkill.type == SkillType.Attack)
+        {
+    FindObjectOfType<SkillDiceRuntime>()?.AddUltimateChargeFromAttack();
+        }
+
+
     if (!IsPlayerTurn) return;
     if (PendingSkill == null) return;
 

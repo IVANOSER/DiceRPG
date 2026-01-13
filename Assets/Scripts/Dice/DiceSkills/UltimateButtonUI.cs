@@ -3,65 +3,57 @@ using UnityEngine.UI;
 
 public class UltimateButtonUI : MonoBehaviour
 {
-    [Header("Refs")]
-    [SerializeField] private SkillDiceRuntime dice; // <-- твій runtime на D12
     [SerializeField] private Button button;
     [SerializeField] private Image iconImage;
-    [SerializeField] private GameObject root; // що показувати/ховати (може бути цей же GO)
+    [SerializeField] private GameObject root;
+
+    private DiceLoadoutRuntime Loadout => DiceLoadoutRuntime.Instance;
 
     private void Awake()
     {
-        if (root == null) root = gameObject;
+        if (root == null)
+            root = gameObject;
 
         if (button != null)
             button.onClick.AddListener(OnClick);
     }
 
-    private void OnEnable()
+    private void Update()
     {
-        if (dice == null) return;
-
-        dice.OnUltimateReadyChanged += HandleReady;
-        dice.OnUltimateChargeChanged += HandleCharge;
-
-        // init
-        HandleCharge(dice.CurrentCharge, dice.MaxCharge);
-        HandleReady(dice.IsUltimateReady);
-        RefreshIcon();
+        Refresh();
     }
 
-    private void OnDisable()
+    private void Refresh()
     {
-        if (dice == null) return;
+        if (Loadout == null || Loadout.Ultimate == null)
+        {
+            SetVisible(false);
+            return;
+        }
 
-        dice.OnUltimateReadyChanged -= HandleReady;
-        dice.OnUltimateChargeChanged -= HandleCharge;
+        var cfg = UltimateConfigLoader.Get();
+        bool ready = Loadout.IsUltimateReady(cfg.charge.maxCharge);
+
+        SetVisible(ready);
+
+        if (iconImage != null)
+        {
+            iconImage.sprite = Loadout.Ultimate.icon;
+            iconImage.enabled = Loadout.Ultimate.icon != null;
+        }
+
+        if (button != null)
+            button.interactable = ready;
     }
 
-    private void RefreshIcon()
+    private void SetVisible(bool visible)
     {
-        if (iconImage == null || dice == null) return;
-        iconImage.sprite = dice.Ultimate != null ? dice.Ultimate.icon : null;
-        iconImage.enabled = (iconImage.sprite != null);
-    }
-
-    private void HandleReady(bool ready)
-    {
-        // ти казав: "коли заряд повний — зʼявляється кнопка"
-        if (root != null) root.SetActive(ready);
-        if (button != null) button.interactable = ready;
-
-        RefreshIcon();
-    }
-
-    private void HandleCharge(int cur, int max)
-    {
-        // якщо захочеш — тут можна обновляти текст/слайдер типу cur/max
-        // зараз нічого не робимо
+        if (root != null && root.activeSelf != visible)
+            root.SetActive(visible);
     }
 
     private void OnClick()
     {
-        dice?.TryUseUltimate();
+        Loadout?.TryUseUltimate();
     }
 }

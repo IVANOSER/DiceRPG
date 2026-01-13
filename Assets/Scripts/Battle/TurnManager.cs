@@ -82,7 +82,12 @@ public class TurnManager : MonoBehaviour
     // ✅ Ultimate charge: за кожну атаку +Y
     if (PendingSkill.type == SkillType.Attack)
         {
-    FindObjectOfType<SkillDiceRuntime>()?.AddUltimateChargeFromAttack();
+    var cfg = UltimateConfigLoader.Get();
+    DiceLoadoutRuntime.Instance?.AddUltimateCharge(
+    cfg.charge.chargePerAttack,
+    cfg.charge.maxCharge
+);
+
         }
 
 

@@ -5136,8 +5136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eb1bb2c977364a65b81c8065787a39a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightHitDegrees: 50
-  heavyHitDegrees: 60
+  lightHitDegrees: 30
+  heavyHitDegrees: 40
   duration: 0.18
   oscillations: 3
   xWeight: 1

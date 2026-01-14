@@ -28,20 +28,33 @@ public class PlayerHealth : MonoBehaviour
     /// Отримання урону (з урахуванням Shield статусу)
     /// </summary>
     public void TakeDamage(int dmg)
+{
+    var statuses = GetComponent<StatusController>();
+    if (statuses != null && statuses.TryUseShieldAbsorb())
+        return;
+
+    dmg = Mathf.Max(0, dmg);
+    if (dmg <= 0) return;
+
+    
+    var wobble = GetComponentInChildren<MiniatureWobble>();
+    if (wobble != null)
     {
-        // 🛡️ Shield поглинає АТАКУ
-        var statuses = GetComponent<StatusController>();
-        if (statuses != null && statuses.TryUseShieldAbsorb())
-            return;
+        Vector3 hitFrom =
+            Camera.main != null
+                ? Camera.main.transform.position
+                : transform.position + Vector3.back;
 
-        dmg = Mathf.Max(0, dmg);
-        CurrentHp = Mathf.Max(0, CurrentHp - dmg);
-
-        OnHpChanged?.Invoke(CurrentHp, MaxHp);
-
-        if (CurrentHp <= 0)
-            OnDied?.Invoke();
+        wobble.PlayLight(hitFrom); // або PlayHeavy(hitFrom)
     }
+
+    CurrentHp = Mathf.Max(0, CurrentHp - dmg);
+    OnHpChanged?.Invoke(CurrentHp, MaxHp);
+
+    if (CurrentHp <= 0)
+        OnDied?.Invoke();
+}
+
 
     /// <summary>
     /// Лікування

@@ -2,11 +2,16 @@ using UnityEngine;
 
 public class BurnStatus : StatusEffect
 {
-    private readonly int damagePerTurn;
+    private int damagePerTurn; // <-- було readonly
 
     public BurnStatus(int turns, int dmgPerTurn) : base(turns)
     {
         damagePerTurn = Mathf.Max(0, dmgPerTurn);
+    }
+
+    public void SetDamagePerTurn(int value)
+    {
+        damagePerTurn = Mathf.Max(0, value);
     }
 
     public override void OnTurnStart(StatusController target)

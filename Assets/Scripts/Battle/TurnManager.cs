@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Reflection;
 using UnityEngine;
+using System.Linq;
 
 public class TurnManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class TurnManager : MonoBehaviour
     [SerializeField] private float beforeEnemiesTurnDelay = 0.45f;   // пауза перед першим ударом ворогів
     [SerializeField] private float betweenEnemyAttacksDelay = 0.70f; // пауза між ударами ворогів
     [SerializeField] private float beforePlayerTurnDelay = 0.25f;    // пауза перед поверненням ходу гравцю
+    [SerializeField] private float afterEnemyStatusDelay = 0.25f;
+
 
     [Header("Player refs")]
     [SerializeField] private PlayerStats playerStats;
@@ -162,57 +165,68 @@ public class TurnManager : MonoBehaviour
     }
 
     private IEnumerator EnemiesTurn()
-    {
-        float pre = Mathf.Max(0f, beforeEnemiesTurnDelay);
-        if (pre > 0f) yield return new WaitForSeconds(pre);
-
-        foreach (var enemy in BattleManager.Instance.AliveEnemies)
 {
-    if (enemy == null) continue;
+    var bm = BattleManager.Instance;
+    if (bm == null) yield break;
 
-    var statuses = enemy.GetComponent<StatusController>();
-    statuses?.TurnStart();
+    // ✅ пауза перед початком ходу ворогів
+    if (beforeEnemiesTurnDelay > 0f)
+        yield return new WaitForSeconds(beforeEnemiesTurnDelay);
 
-    
-    if (statuses != null && statuses.Has<StunStatus>())
+    // snapshot, щоб смерть від Burn не ламала цикл
+    var alive = bm.AliveEnemies; // IReadOnlyList<Enemy>
+    Enemy[] snapshot = new Enemy[alive.Count];
+    for (int i = 0; i < alive.Count; i++)
+        snapshot[i] = alive[i];
+
+    for (int i = 0; i < snapshot.Length; i++)
     {
-        // тут можна VFX / іконку / текст "STUN"
-        Debug.Log($"{enemy.name} is stunned — skip turn");
+        var enemy = snapshot[i];
+        if (enemy == null) continue;
 
-        yield return new WaitForSeconds(betweenEnemyAttacksDelay);
+        var statuses = enemy.GetComponent<StatusController>();
 
-        statuses.TurnEnd(); // зменшуємо stun
-        continue; 
+        // 1) Спочатку статуси (Burn тикає тут і може вбити)
+        statuses?.TurnStart();
+
+        // ✅ пауза після тіку статусів (щоб не виглядало "одночасно")
+        if (afterEnemyStatusDelay > 0f)
+            yield return new WaitForSeconds(afterEnemyStatusDelay);
+
+        // 3) Якщо ворог помер від Burn — його могли прибрати зі списку живих
+        if (!bm.AliveEnemies.Contains(enemy))
+            continue;
+
+        // 4) Якщо stunned — пропускаємо атаку
+        if (statuses != null && statuses.Has<StunStatus>())
+        {
+            if (betweenEnemyAttacksDelay > 0f)
+                yield return new WaitForSeconds(betweenEnemyAttacksDelay);
+
+            statuses.TurnEnd();
+            continue;
+        }
+
+        // 5) Атака ворога
+        playerHealth.TakeDamage(enemy.AttackDamage);
+        
+
+        if (betweenEnemyAttacksDelay > 0f)
+            yield return new WaitForSeconds(betweenEnemyAttacksDelay);
+
+        // 6) Кінець ходу ворога
+        statuses?.TurnEnd();
     }
-    // ===========================
 
-    // ---- ЗВИЧАЙНА АТАКА ВОРОГА ----
-    playerHealth.TakeDamage(enemy.AttackDamage);
-    BattleUI.Instance?.Refresh(0, IsPlayerTurn);
+    // ✅ пауза перед поверненням ходу гравцю
+    if (beforePlayerTurnDelay > 0f)
+        yield return new WaitForSeconds(beforePlayerTurnDelay);
 
-    BattleHitFX.PlayHit(
-        playerHealth.gameObject,
-        enemy.transform.position,
-        0.6f
-    );
-
-    if (BattleVFXSystem.I != null)
-        BattleVFXSystem.I.SpawnHitImpact(playerHealth.transform);
-
-    yield return new WaitForSeconds(betweenEnemyAttacksDelay);
-
-    statuses?.TurnEnd();
-
-    if (playerHealth.CurrentHp <= 0)
-        yield break;
+    BeginPlayerTurn();
 }
 
 
-        float post = Mathf.Max(0f, beforePlayerTurnDelay);
-        if (post > 0f) yield return new WaitForSeconds(post);
 
-        BeginPlayerTurn();
-    }
 
     // -------- UI refresh --------
     private void RefreshUI()

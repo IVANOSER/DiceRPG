@@ -1,4 +1,4 @@
 using UnityEngine;
 
-public enum EquipmentSlot { LeftHand, RightHand, Belt, Helmet, Chest, Legs }
+public enum EquipmentSlot { LeftHand, RightHand, Belt, Helmet, Chest, Legs, DiceCore }
 

@@ -7909,7 +7909,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1909
+  m_VersionIndex: 1915
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -8428,7 +8428,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3474476670820981619}
   - component: {fileID: 8992742970487327231}
-  - component: {fileID: 2626357964687180263}
   - component: {fileID: 8001800630746761219}
   m_Layer: 7
   m_Name: D12New
@@ -8488,20 +8487,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -8156870392999314590, guid: 120974f1d52025b4caec31ebfc4b2aac, type: 3}
---- !u!114 &2626357964687180263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7865744300738623728}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1a243a25cfc54631b710d1a248b89e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kind: 0
-  diceTurn: {fileID: 0}
 --- !u!114 &8001800630746761219
 MonoBehaviour:
   m_ObjectHideFlags: 0

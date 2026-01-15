@@ -42,7 +42,21 @@ public class EquipTabController : MonoBehaviour
     [Header("Upgrade")]
     public ItemUpgradeManager upgradeManager; // якщо не заданий — візьме Instance
 
-    private readonly List<ItemCellView> spawnedCells = new();
+    // =========================
+    // ✅ DICE CORE (ULTIMATE)
+    // =========================
+    [Header("Dice Core (Ultimate)")]
+    public List<UltimateSO> allUltimates = new();
+    public bool autoLoadUltimatesFromResources = true;
+    public string ultimatesResourcesPath = "Data/Ultimates";
+    public ItemCellView ultimateCellPrefab;
+
+
+    [Header("Dice Core Visual (separate GO)")]
+    public DiceCoreVisualController coreVisualController;
+
+    // ✅ один список для будь-яких cell prefabів (items + ultimates)
+    private readonly List<GameObject> spawnedCells = new();
     private EquipmentSlot currentSlot;
 
     private void Start()
@@ -51,6 +65,9 @@ public class EquipTabController : MonoBehaviour
 
         if (dicePreviewBinder == null)
             dicePreviewBinder = FindFirstObjectByType<DicePreviewBinder>(FindObjectsInactive.Include);
+
+        if (coreVisualController == null)
+            coreVisualController = FindFirstObjectByType<DiceCoreVisualController>(FindObjectsInactive.Include);
 
         if (upgradeManager == null)
             upgradeManager = ItemUpgradeManager.Instance;
@@ -73,9 +90,14 @@ public class EquipTabController : MonoBehaviour
             Debug.Log($"[EquipTabController] Auto-loaded {allItems.Count} items from Resources/{itemsResourcesPath}");
         }
 
+        if (autoLoadUltimatesFromResources && (allUltimates == null || allUltimates.Count == 0))
+        {
+            allUltimates = new List<UltimateSO>(Resources.LoadAll<UltimateSO>(ultimatesResourcesPath));
+            Debug.Log($"[EquipTabController] Auto-loaded {allUltimates.Count} ultimates from Resources/{ultimatesResourcesPath}");
+        }
+
         RefreshAll();
         ClosePicker();
-        
 
         Invoke(nameof(RefreshDiceFromEquipped), 0f);
     }
@@ -99,12 +121,45 @@ public class EquipTabController : MonoBehaviour
 
         ClearGrid();
 
+        // =========================
+        // ✅ DICE CORE SLOT
+        // =========================
+        if (slot == EquipmentSlot.DiceCore)
+        {
+            if (ultimateCellPrefab == null)
+            {
+                Debug.LogError("[EquipTabController] ultimateCellPrefab is not assigned!");
+                return;
+            }
+
+            foreach (var ult in allUltimates)
+            {
+                if (ult == null) continue;
+                if (ult.slot != EquipmentSlot.DiceCore) continue;
+
+                var cell = Instantiate(ultimateCellPrefab, gridContent);
+                spawnedCells.Add(cell.gameObject);
+
+                cell.Bind(ult, picked =>
+                {
+                    EquipPickedUltimateToCore(picked);
+                });
+            }
+
+            UpdateRemoveButtonState();
+            if (pickerPanel) pickerPanel.SetActive(true);
+            return;
+        }
+
+        // =========================
+        // ✅ NORMAL EQUIPMENT SLOTS
+        // =========================
         var candidates = allItems.FindAll(i => i != null && i.slot == slot);
 
         foreach (var item in candidates)
         {
             var cell = Instantiate(itemCellPrefab, gridContent);
-            spawnedCells.Add(cell);
+            spawnedCells.Add(cell.gameObject);
 
             cell.Bind(item, picked =>
             {
@@ -123,7 +178,6 @@ public class EquipTabController : MonoBehaviour
         }
 
         UpdateRemoveButtonState();
-
         if (pickerPanel) pickerPanel.SetActive(true);
     }
 
@@ -154,8 +208,43 @@ public class EquipTabController : MonoBehaviour
         upgradeManager.TryUpgrade(picked);
     }
 
+    // =========================
+    // ✅ DICE CORE: EQUIP/REMOVE
+    // =========================
+    private void EquipPickedUltimateToCore(UltimateSO picked)
+    {
+        if (picked == null) return;
+
+        var rt = DiceLoadoutRuntime.Instance;
+        if (rt == null) return;
+
+        rt.SetUltimate(picked); // скидає заряд всередині
+        RefreshAll();
+        UpdateRemoveButtonState();
+
+        RefreshDiceFromEquipped();              // оновить прев’ю граней (скіли)
+        coreVisualController?.ApplyFromRuntime(); // оновить колір ядра
+
+        ClosePicker();
+    }
+
     private void RemoveFromCurrentSlot()
     {
+        // ✅ remove core ultimate
+        if (currentSlot == EquipmentSlot.DiceCore)
+        {
+            var rt = DiceLoadoutRuntime.Instance;
+            if (rt != null) rt.SetUltimate(null);
+
+            RefreshAll();
+            UpdateRemoveButtonState();
+
+            RefreshDiceFromEquipped();
+            coreVisualController?.ApplyFromRuntime();
+            return;
+        }
+
+        // ✅ remove equipment item
         if (loadout == null) return;
 
         loadout.Set(currentSlot, null);
@@ -170,7 +259,16 @@ public class EquipTabController : MonoBehaviour
 
     private void UpdateRemoveButtonState()
     {
-        if (!btnRemove || loadout == null) return;
+        if (!btnRemove) return;
+
+        if (currentSlot == EquipmentSlot.DiceCore)
+        {
+            var rt = DiceLoadoutRuntime.Instance;
+            btnRemove.interactable = rt != null && rt.Ultimate != null;
+            return;
+        }
+
+        if (loadout == null) return;
 
         var equipped = loadout.Get(currentSlot);
         btnRemove.interactable = equipped != null;
@@ -199,6 +297,17 @@ public class EquipTabController : MonoBehaviour
         {
             if (s == null) continue;
 
+            // ✅ DiceCore slot shows ultimate icon
+            if (s.slot == EquipmentSlot.DiceCore)
+            {
+                var rt = DiceLoadoutRuntime.Instance;
+                var ult = rt != null ? rt.Ultimate : null;
+
+                s.SetIcon(ult != null ? ult.icon : null);
+                s.SetUpgradeAvailable(false);
+                continue;
+            }
+
             var item = loadout.Get(s.slot);
             s.SetIcon(item != null ? item.icon : null);
 
@@ -214,8 +323,8 @@ public class EquipTabController : MonoBehaviour
 
     private void ClearGrid()
     {
-        foreach (var c in spawnedCells)
-            if (c != null) Destroy(c.gameObject);
+        foreach (var go in spawnedCells)
+            if (go != null) Destroy(go);
 
         spawnedCells.Clear();
     }
@@ -242,6 +351,10 @@ public class EquipTabController : MonoBehaviour
 
         if (allItems != null) allItems.Clear();
 
+        // ✅ також скинемо core ultimate в runtime
+        var rt = DiceLoadoutRuntime.Instance;
+        if (rt != null) rt.SetUltimate(null);
+
         ClearGrid();
         UpdateRemoveButtonState();
         ClosePicker();
@@ -250,6 +363,8 @@ public class EquipTabController : MonoBehaviour
             meshSwapper.Apply();
 
         RefreshAll();
+        RefreshDiceFromEquipped();
+        coreVisualController?.ApplyFromRuntime();
     }
 
     private void RefreshDiceFromEquipped()
@@ -269,11 +384,21 @@ public class EquipTabController : MonoBehaviour
 
         rt.RebuildSkillFacesFromEquipped(skills6);
         dicePreviewBinder?.ApplyFromRuntime();
+
+        // ✅ ядро окремим GO (колір)
+        coreVisualController?.ApplyFromRuntime();
     }
 
     // ✅ викликається з badge button
     public void OpenEquippedItemCard(EquipmentSlot slot)
     {
+        // ✅ якщо натиснули badge на DiceCore — просто відкриваємо слот (без item card)
+        if (slot == EquipmentSlot.DiceCore)
+        {
+            OpenSlot(EquipmentSlot.DiceCore);
+            return;
+        }
+
         if (loadout == null || itemCardPanel == null) return;
 
         var item = loadout.Get(slot);
@@ -289,28 +414,24 @@ public class EquipTabController : MonoBehaviour
     }
 
     public void AddItemFromChest(EquipItemSO item, int copies = 1)
-{
-    if (item == null) return;
+    {
+        if (item == null) return;
 
-    if (allItems == null) allItems = new List<EquipItemSO>();
+        // 1) Додати в інвентарь, щоб можна було екіпнути
+        AddToInventory(item);
 
-    // 1) Додати в інвентар (лише якщо ще нема)
-    if (!allItems.Contains(item))
-        allItems.Add(item);
+        // 2) Додати копії в апгрейд менеджер (щоб одразу можна було апгрейдити)
+        if (upgradeManager == null)
+            upgradeManager = ItemUpgradeManager.Instance;
 
-    // 2) Додати копії для апгрейду (саме так у тебе рахується можливість апгрейду)
-    if (upgradeManager == null)
-        upgradeManager = ItemUpgradeManager.Instance;
+        if (upgradeManager != null)
+            upgradeManager.AddCopies(item, Mathf.Max(1, copies));
 
-    if (upgradeManager != null)
-        upgradeManager.AddCopies(item, Mathf.Max(1, copies));
+        // 3) Оновити UI
+        RefreshAll();
 
-    // 3) Оновити UI
-    RefreshAll();
-
-    // 4) Якщо пікер зараз відкритий — перебудувати грід, щоб новий айтем одразу зʼявився
-    if (pickerPanel != null && pickerPanel.activeSelf)
-        OpenSlot(currentSlot);
-}
-
+        // 4) Якщо пікер зараз відкритий — перебудувати грід, щоб новий айтем одразу зʼявився
+        if (pickerPanel != null && pickerPanel.activeSelf)
+            OpenSlot(currentSlot);
+    }
 }

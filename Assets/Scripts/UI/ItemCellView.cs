@@ -14,6 +14,9 @@ public class ItemCellView : MonoBehaviour
     public Color legColor  = new Color(1f, 0.6f, 0.1f);       // золотистий/оранжевий
     public Color defaultColor = Color.white;
 
+    private UltimateSO ultimate;
+    private System.Action<UltimateSO> onUltimateClick;
+
     private EquipItemSO item;
     private System.Action<EquipItemSO> onClick;
 
@@ -65,6 +68,31 @@ public class ItemCellView : MonoBehaviour
             default:
                 frame.color = defaultColor;
                 break;
+        }
+    }
+
+    public void Bind(UltimateSO newUltimate, System.Action<UltimateSO> click)
+    {
+        ultimate = newUltimate;
+        onUltimateClick = click;
+
+        // icon
+        if (icon)
+        {
+            icon.sprite = ultimate != null ? ultimate.icon : null;
+            icon.enabled = ultimate != null && ultimate.icon != null;
+        }
+
+        // frame — для ульти просто дефолтний (або можна по coreColor)
+        if (frame)
+        {
+            frame.color = defaultColor;
+        }
+
+        if (button)
+        {
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(() => onUltimateClick?.Invoke(ultimate));
         }
     }
 }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BattleVFXSystem : MonoBehaviour
 {
@@ -8,9 +8,16 @@ public class BattleVFXSystem : MonoBehaviour
     [SerializeField] private GameObject healPrefab;
     [SerializeField] private GameObject hitImpactPrefab;
 
+    // ✅ ULTIMATES
+    [Header("Ultimate Prefabs")]
+    [SerializeField] private GameObject meteorPrefab;
+
     [Header("Spawn Offsets (tabletop)")]
     [SerializeField] private Vector3 healOffset = new Vector3(0f, 0.25f, 0f);
     [SerializeField] private Vector3 hitOffset = new Vector3(0f, 0.35f, 0f);
+
+    // ✅ метеор — зазвичай в центр цілі (трохи підняти)
+    [SerializeField] private Vector3 meteorOffset = new Vector3(0f, 0.25f, 0f);
 
     [Header("Optional: parent all spawned vfx here")]
     [SerializeField] private Transform vfxRoot;
@@ -25,14 +32,12 @@ public class BattleVFXSystem : MonoBehaviour
         I = this;
     }
 
-
-
     public void SpawnHeal(Transform target)
     {
         if (target == null || healPrefab == null) return;
 
         Vector3 pos = target.position + healOffset;
-        Quaternion rot = target.rotation; 
+        Quaternion rot = target.rotation;
 
         Spawn(healPrefab, pos, rot);
     }
@@ -44,10 +49,25 @@ public class BattleVFXSystem : MonoBehaviour
         Spawn(
             hitImpactPrefab,
             target.position + hitOffset,
-            target.rotation 
+            target.rotation
         );
     }
 
+    // =========================
+    // ✅ METEOR (ONE BIG)
+    // =========================
+    public void SpawnMeteor(Vector3 worldPos)
+    {
+        if (meteorPrefab == null) return;
+
+        Spawn(meteorPrefab, worldPos + meteorOffset, Quaternion.identity);
+    }
+
+    public void SpawnMeteor(Transform target)
+    {
+        if (target == null) return;
+        SpawnMeteor(target.position);
+    }
 
     private void Spawn(GameObject prefab, Vector3 pos, Quaternion rot)
     {
@@ -56,5 +76,4 @@ public class BattleVFXSystem : MonoBehaviour
         else
             Instantiate(prefab, pos, rot);
     }
-
 }

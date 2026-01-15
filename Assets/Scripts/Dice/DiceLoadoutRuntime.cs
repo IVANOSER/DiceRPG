@@ -7,6 +7,8 @@ public class DiceLoadoutRuntime : MonoBehaviour
 {
     public static DiceLoadoutRuntime Instance { get; private set; }
     public static event Action OnChanged;
+    public static event Action<UltimateSO, UltimateContext> OnUltimateUsed;
+
 
     [Header("Skill faces (12)")]
     [SerializeField] private SkillSO[] skillFaces = new SkillSO[12];
@@ -126,6 +128,7 @@ public class DiceLoadoutRuntime : MonoBehaviour
     };
 
     ultimate.Execute(ctx, cfg);
+    OnUltimateUsed?.Invoke(ultimate, ctx);
     ConsumeUltimate();
     return true;
 }

@@ -31,15 +31,19 @@ public class StatusController : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// Викликається НА ПОЧАТКУ ходу юніта.
-    /// Важливо: ітеруємось по snapshot, щоб статуси не "з'їдали" один одного.
-    /// </summary>
+    // ✅ НОВЕ: отримати всі статуси певного типу (щоб UI міг сумувати)
+    public List<T> GetAll<T>() where T : StatusEffect
+    {
+        var list = new List<T>();
+        for (int i = 0; i < _effects.Count; i++)
+            if (_effects[i] is T t) list.Add(t);
+        return list;
+    }
+
     public void TurnStart()
     {
         if (_effects.Count == 0) return;
 
-        // snapshot: якщо під час OnTurnStart щось додасться/зміниться — цикл не зламається
         var snapshot = _effects.ToArray();
         for (int i = 0; i < snapshot.Length; i++)
         {
@@ -51,10 +55,6 @@ public class StatusController : MonoBehaviour
         OnStatusesChanged?.Invoke();
     }
 
-    /// <summary>
-    /// Викликається В КІНЦІ ходу юніта.
-    /// Тут декрементимо/очищаємо.
-    /// </summary>
     public void TurnEnd()
     {
         if (_effects.Count == 0) return;
@@ -77,45 +77,24 @@ public class StatusController : MonoBehaviour
         OnStatusesChanged?.Invoke();
     }
 
-    // ---------------- STUN ----------------
-    public void RefreshOrAddStun(int turns)
+    // ---------------- SHIELD (STACKING) ----------------
+    public void StackOrAddShield(int absorbs)
     {
-        turns = Mathf.Max(1, turns);
+        absorbs = Mathf.Max(0, absorbs);
+        if (absorbs <= 0) return;
 
-        var stun = Get<StunStatus>();
-        if (stun != null)
+        var shield = Get<ShieldStatus>();
+        if (shield != null)
         {
-            stun.RefreshToAtLeast(turns);
+            shield.AddAbsorbs(absorbs);
             OnStatusesChanged?.Invoke();
             return;
         }
 
-        Add(new StunStatus(turns));
+        Add(new ShieldStatus(absorbs));
     }
 
-    // ---------------- BURN ----------------
-    public void RefreshOrAddBurn(int turns, int dmgPerTurn)
-    {
-        turns = Mathf.Max(1, turns);
-        dmgPerTurn = Mathf.Max(0, dmgPerTurn);
-
-        var burn = Get<BurnStatus>();
-        if (burn != null)
-        {
-            burn.RefreshToAtLeast(turns);
-
-            // Якщо в твоєму BurnStatus немає цих методів — скажи, я піджену під твій клас.
-            // Але краще мати, бо інакше dmgPerTurn не оновлюється ніколи.
-            burn.SetDamagePerTurn(dmgPerTurn);
-
-            OnStatusesChanged?.Invoke();
-            return;
-        }
-
-        Add(new BurnStatus(turns, dmgPerTurn));
-    }
-
-    // ---------------- SHIELD ----------------
+    // Викликається з PlayerHealth.TakeDamage()
     public bool TryUseShieldAbsorb()
     {
         var shield = Get<ShieldStatus>();
@@ -123,7 +102,6 @@ public class StatusController : MonoBehaviour
 
         bool absorbed = shield.TryAbsorbHit();
 
-        // якщо стаки скінчились — прибираємо одразу (щоб UI не брехав до TurnEnd)
         if (shield.IsExpired)
             _effects.Remove(shield);
 
@@ -131,5 +109,34 @@ public class StatusController : MonoBehaviour
             OnStatusesChanged?.Invoke();
 
         return absorbed;
+    }
+
+    // (опційно) лишаємо для сумісності
+    public void RefreshOrAddBurn(int turns, int dmgPerTurn)
+    {
+        // якщо ти вже робив стакання burn/stun — можеш лишити свою реалізацію
+        var burn = Get<BurnStatus>();
+        if (burn != null)
+        {
+            burn.AddTurns(Mathf.Max(1, turns));
+            burn.SetDamagePerTurn(Mathf.Max(burn.DamagePerTurn, dmgPerTurn));
+            OnStatusesChanged?.Invoke();
+            return;
+        }
+
+        Add(new BurnStatus(Mathf.Max(1, turns), Mathf.Max(0, dmgPerTurn)));
+    }
+
+    public void RefreshOrAddStun(int turns)
+    {
+        var stun = Get<StunStatus>();
+        if (stun != null)
+        {
+            stun.AddTurns(Mathf.Max(1, turns));
+            OnStatusesChanged?.Invoke();
+            return;
+        }
+
+        Add(new StunStatus(Mathf.Max(1, turns)));
     }
 }

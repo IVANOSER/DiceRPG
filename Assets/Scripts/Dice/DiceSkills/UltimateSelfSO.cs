@@ -25,7 +25,10 @@ public class UltimateSelfSO : UltimateSO
         {
             var sc = ctx.playerRoot.GetComponent<StatusController>();
             if (sc != null)
-                sc.Add(new ShieldStatus(p.shieldAbsorbs));
+            {
+                // ✅ НЕ додаємо новий ShieldStatus, а стакаємо в існуючий
+                sc.StackOrAddShield(p.shieldAbsorbs);
+            }
         }
     }
 }

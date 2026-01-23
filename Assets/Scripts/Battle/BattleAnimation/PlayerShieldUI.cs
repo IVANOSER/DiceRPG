@@ -4,11 +4,11 @@ using TMPro;
 public class PlayerShieldUI : MonoBehaviour
 {
     [Header("UI")]
-    public GameObject shieldRoot;      // контейнер (іконка + текст)
-    public TMP_Text shieldValueText;   // TMP текст з цифрою
+    public GameObject shieldRoot;
+    public TMP_Text shieldValueText;
 
     [Header("Player (optional)")]
-    public StatusController statusController; // можна в інспекторі, або auto-find
+    public StatusController statusController;
 
     [Header("Fallback polling")]
     public bool usePollingIfNoEvents = true;
@@ -56,13 +56,16 @@ public class PlayerShieldUI : MonoBehaviour
             return;
         }
 
-        
-        var shield = statusController.Get<ShieldStatus>();
+        // вњ… РЎРЈРњРђ РІСЃС–С… С‰РёС‚С–РІ (РЅР°РІС–С‚СЊ СЏРєС‰Рѕ С—С… РєС–Р»СЊРєР°)
+        int total = 0;
+        var shields = statusController.GetAll<ShieldStatus>();
+        for (int i = 0; i < shields.Count; i++)
+            total += shields[i].AbsorbsLeft;
 
-        if (shield != null && shield.AbsorbsLeft > 0)
+        if (total > 0)
         {
             shieldRoot.SetActive(true);
-            shieldValueText.text = shield.AbsorbsLeft.ToString();
+            shieldValueText.text = total.ToString();
         }
         else
         {
@@ -70,20 +73,18 @@ public class PlayerShieldUI : MonoBehaviour
         }
     }
 
-    // ===== Optional event hookup (якщо у StatusController є OnStatusesChanged) =====
     void TrySubscribe()
     {
         if (statusController == null) return;
 
-        // якщо в тебе є івент OnStatusesChanged — просто розкоментуй 2 рядки нижче
-        // statusController.OnStatusesChanged += Refresh;
-        // usePollingIfNoEvents = false;
+        statusController.OnStatusesChanged += Refresh;
+        usePollingIfNoEvents = false;
     }
 
     void TryUnsubscribe()
     {
         if (statusController == null) return;
 
-        // statusController.OnStatusesChanged -= Refresh;
+        statusController.OnStatusesChanged -= Refresh;
     }
 }
